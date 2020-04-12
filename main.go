@@ -5,21 +5,21 @@ import (
 )
 
 // Condition holds configuration of entire site
-type Condition struct{}
+type Condition struct {
+	PostPath string
+}
 
 // NewCondition initializes Condition
 func NewCondition() *Condition {
-	return &Condition{}
+	return &Condition{
+		PostPath: "post",
+	}
 }
 
 func main() {
 	c := NewCondition()
 
-	repo, err := NewPostRepository(c)
-	if err != nil {
-		log.Panicf("failed to NewPostRepository. err=%+v", err)
-	}
-
+	repo := NewPostRepository(c)
 	posts, err := repo.List()
 	if err != nil {
 		log.Panicf("failed to list posts. err=%+v", err)

@@ -5,7 +5,7 @@ type View struct{}
 
 // NewView initializes View
 func NewView(c *Condition) (*View, error) {
-	return nil, nil
+	return &View{}, nil
 }
 
 // Build builds and writes entire contents to distribute
