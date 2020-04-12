@@ -85,7 +85,10 @@ func (r *PostRepository) load() ([]*Post, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to read file. file=%s, err=%w", f, err)
 		}
-		post := NewPost(file.Name(), content)
+		post, err := NewPost(file.Name(), content)
+		if err != nil {
+			return nil, fmt.Errorf("failed to NewPost. filename=%s, err=%w", file.Name(), err)
+		}
 		res = append(res, post)
 	}
 

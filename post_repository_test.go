@@ -103,19 +103,23 @@ func TestPostRepository_load(t *testing.T) {
 						},
 					},
 					contentByName: map[string]([]byte){
-						"file001.md": ([]byte)(`file001 content`),
-						"file002.md": ([]byte)(`file002 content`),
+						"file001.md": ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
+file001 content`),
+						"file002.md": ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00","tags":["golang"]}
+file002 content`),
 					},
 				},
 			},
 			want: []*Post{
 				&Post{
 					Filename: "file001.md",
-					Raw:      ([]byte)(`file001 content`),
+					Raw: ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
+file001 content`),
 				},
 				&Post{
 					Filename: "file002.md",
-					Raw:      ([]byte)(`file002 content`),
+					Raw: ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00","tags":["golang"]}
+file002 content`),
 				},
 			},
 			wantErr: false,
@@ -163,7 +167,9 @@ func TestPostRepository_List(t *testing.T) {
 							isDir: false,
 						},
 					},
-					contentByName: map[string]([]byte){"file001.md": ([]byte)("")},
+					contentByName: map[string]([]byte){
+						"file001.md": ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
+file001 content`)},
 				},
 			},
 			want: []*Post{
@@ -182,7 +188,9 @@ func TestPostRepository_List(t *testing.T) {
 							isDir: false,
 						},
 					},
-					contentByName: map[string]([]byte){"file001.md": ([]byte)("")},
+					contentByName: map[string]([]byte){
+						"file001.md": ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
+file001 content`)},
 				},
 			},
 			want: []*Post{
