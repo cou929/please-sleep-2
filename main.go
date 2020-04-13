@@ -6,13 +6,19 @@ import (
 
 // Condition holds configuration of entire site
 type Condition struct {
-	PostPath string
+	PostPath   string
+	ViewPath   string
+	ViewSuffix string
+	DestPath   string
 }
 
 // NewCondition initializes Condition
 func NewCondition() *Condition {
 	return &Condition{
-		PostPath: "post",
+		PostPath:   "post",
+		ViewPath:   "view",
+		ViewSuffix: ".html",
+		DestPath:   "dist",
 	}
 }
 

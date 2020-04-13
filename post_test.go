@@ -159,6 +159,7 @@ func TestNewPost(t *testing.T) {
 	type args struct {
 		filename string
 		raw      []byte
+		c        *Condition
 	}
 	tests := []struct {
 		name    string
@@ -175,19 +176,21 @@ func TestNewPost(t *testing.T) {
 
 body here
 blah blah`),
+				c: &Condition{},
 			},
 			want: &Post{
 				Title:    "test post",
 				Issued:   time.Date(2014, 9, 21, 12, 58, 19, 0, time.FixedZone("JST", 9*60*60)),
 				Filename: "test.md",
 				Content:  "body here\nblah blah\n",
+				C:        &Condition{},
 			},
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewPost(tt.args.filename, tt.args.raw)
+			got, err := NewPost(tt.args.filename, tt.args.raw, &Condition{})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewPost() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -10,7 +10,7 @@ const postSuffix = ".md"
 
 // PostRepository loads and parses blog posts
 type PostRepository struct {
-	path   string
+	c      *Condition
 	posts  []*Post
 	reader reader
 }
@@ -48,7 +48,7 @@ func (i ioUtil) ReadFile(filename string) ([]byte, error) {
 // NewPostRepository initializes PostRepository
 func NewPostRepository(c *Condition) *PostRepository {
 	return &PostRepository{
-		path:   c.PostPath,
+		c:      c,
 		reader: ioUtil{},
 	}
 }
@@ -69,9 +69,9 @@ func (r *PostRepository) List() ([]*Post, error) {
 }
 
 func (r *PostRepository) load() ([]*Post, error) {
-	files, err := r.reader.ReadDir(r.path)
+	files, err := r.reader.ReadDir(r.c.PostPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read dir. path=%s, err=%w", r.path, err)
+		return nil, fmt.Errorf("failed to read dir. path=%s, err=%w", r.c.PostPath, err)
 	}
 
 	res := make([]*Post, 0, len(files))
@@ -80,12 +80,12 @@ func (r *PostRepository) load() ([]*Post, error) {
 		if !r.isTarget(file) {
 			continue
 		}
-		f := filepath.Join(r.path, file.Name())
+		f := filepath.Join(r.c.PostPath, file.Name())
 		content, err := r.reader.ReadFile(f)
 		if err != nil {
 			return nil, fmt.Errorf("failed to read file. file=%s, err=%w", f, err)
 		}
-		post, err := NewPost(file.Name(), content)
+		post, err := NewPost(file.Name(), content, r.c)
 		if err != nil {
 			return nil, fmt.Errorf("failed to NewPost. filename=%s, err=%w", file.Name(), err)
 		}

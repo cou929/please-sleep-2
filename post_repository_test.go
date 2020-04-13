@@ -77,6 +77,7 @@ func TestPostRepository_isTarget(t *testing.T) {
 func TestPostRepository_load(t *testing.T) {
 	type fields struct {
 		reader reader
+		c      *Condition
 	}
 	tests := []struct {
 		name    string
@@ -109,6 +110,7 @@ file001 content`),
 file002 content`),
 					},
 				},
+				c: &Condition{PostPath: ""},
 			},
 			want: []*Post{
 				&Post{
@@ -129,13 +131,14 @@ file002 content`),
 		t.Run(tt.name, func(t *testing.T) {
 			r := &PostRepository{
 				reader: tt.fields.reader,
+				c:      tt.fields.c,
 			}
 			got, err := r.load()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PostRepository.load() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			opt := cmpopts.IgnoreFields(Post{}, "Title", "Issued", "Content")
+			opt := cmpopts.IgnoreFields(Post{}, "Title", "Issued", "Content", "C")
 			if diff := cmp.Diff(got, tt.want, opt); diff != "" {
 				t.Errorf("PostRepository.load() diff (-got +want)\n%s", diff)
 			}
@@ -147,6 +150,7 @@ func TestPostRepository_List(t *testing.T) {
 	type fields struct {
 		posts  []*Post
 		reader reader
+		c      *Condition
 	}
 	tests := []struct {
 		name    string
@@ -171,6 +175,7 @@ func TestPostRepository_List(t *testing.T) {
 						"file001.md": ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
 file001 content`)},
 				},
+				c: &Condition{PostPath: ""},
 			},
 			want: []*Post{
 				&Post{Filename: "loaded.md"},
@@ -192,6 +197,7 @@ file001 content`)},
 						"file001.md": ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
 file001 content`)},
 				},
+				c: &Condition{PostPath: ""},
 			},
 			want: []*Post{
 				&Post{Filename: "file001.md"},
@@ -204,13 +210,14 @@ file001 content`)},
 			r := &PostRepository{
 				posts:  tt.fields.posts,
 				reader: tt.fields.reader,
+				c:      tt.fields.c,
 			}
 			got, err := r.List()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PostRepository.List() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			opt := cmpopts.IgnoreFields(Post{}, "Title", "Issued", "Content", "Raw")
+			opt := cmpopts.IgnoreFields(Post{}, "Title", "Issued", "Content", "Raw", "C")
 			if diff := cmp.Diff(got, tt.want, opt); diff != "" {
 				t.Errorf("PostRepository.List() diff (-got +want)\n%s", diff)
 			}

@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -57,6 +58,7 @@ type Post struct {
 	Filename string
 	Raw      []byte
 	Content  string
+	C        *Condition
 }
 
 type postHeader struct {
@@ -74,10 +76,12 @@ type postContent struct {
 func NewPost(
 	filename string,
 	raw []byte,
+	c *Condition,
 ) (*Post, error) {
 	p := &Post{
 		Filename: filename,
 		Raw:      raw,
+		C:        c,
 	}
 
 	content, err := p.parseRaw(p.Raw)
@@ -153,4 +157,9 @@ func (p *Post) parseHeader(line string) (*postHeader, error) {
 	}
 
 	return res, nil
+}
+
+// DestFileName returns filename to output
+func (p *Post) DestFileName() string {
+	return strings.TrimSuffix(p.Filename, filepath.Ext(p.Filename)) + p.C.ViewSuffix
 }
