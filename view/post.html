@@ -1,0 +1,26 @@
+{{template "partial/former.html" .}}
+{{$post := index .Posts .ArticleIndex}}
+
+<section class="articles">
+    <article class="post">
+        <header>
+            <span><abbr title="{{$post.Issued.Format "2006-01-02T15:04:05Z07:00"}}" class="published updated">{{$post.Issued.Format "02 Jan 2006"}}</abbr></span>
+            <h1><a href="{{$post.DestFileName}}">{{$post.Title}}</a></h1>
+        </header>
+        <section>
+            {{convert $post.Content}}
+        </section>
+    </article>
+    <nav>
+        {{if ne .ArticleIndex (lastIndex .Posts)}}
+        {{$prev := index .Posts (inc .ArticleIndex)}}
+        <a class="prev" href="{{$prev.DestFileName}}">{{$prev.Title}}</a>
+        {{end}}
+        {{if ne .ArticleIndex 0}}
+        {{$next := index .Posts (dec .ArticleIndex)}}
+        <a class="next" href="{{$next.DestFileName}}">{{$next.Title}}</a>
+        {{end}}
+    </nav>
+</section>
+
+{{template "partial/last.html" .}}

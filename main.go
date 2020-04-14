@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 )
 
 // Condition holds configuration of entire site
@@ -10,6 +11,8 @@ type Condition struct {
 	ViewPath   string
 	ViewSuffix string
 	DestPath   string
+	SiteTitle  string
+	BuiltAt    time.Time
 }
 
 // NewCondition initializes Condition
@@ -19,6 +22,8 @@ func NewCondition() *Condition {
 		ViewPath:   "view",
 		ViewSuffix: ".html",
 		DestPath:   "dist",
+		SiteTitle:  "Please Sleep",
+		BuiltAt:    time.Now(),
 	}
 }
 

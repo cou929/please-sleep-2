@@ -7,6 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+	"time"
+
+	"github.com/russross/blackfriday/v2"
 )
 
 // View manages views of the site
@@ -23,13 +26,15 @@ func NewView(c *Condition) (*View, error) {
 
 // Build builds and writes entire contents to distribute
 func (v View) Build(posts []*Post) error {
-	root, err := v.prepareTemplates(v.c.ViewPath, v.c.ViewSuffix, nil)
+	root, err := v.prepareTemplates(v.c.ViewPath, v.c.ViewSuffix, v.viewFunc())
 	if err != nil {
 		return fmt.Errorf("failed to prepare templates. err=%w", err)
 	}
 	if err := v.ensureDestDir(v.c.DestPath); err != nil {
 		return fmt.Errorf("failed to ensure dest dir %s. err=%w", v.c.DestPath, err)
 	}
+
+	tv := v.templateVariable(posts)
 
 	for _, t := range root.Templates() {
 		if !v.isDriver(t.Name()) {
@@ -42,19 +47,22 @@ func (v View) Build(posts []*Post) error {
 			if err != nil {
 				return fmt.Errorf("failed to create %s. err=%w", dest, err)
 			}
-			if err := root.ExecuteTemplate(f, t.Name(), nil); err != nil {
+			if err := root.ExecuteTemplate(f, t.Name(), tv); err != nil {
 				return fmt.Errorf("failed to execute template %s. err=%w", t.Name(), err)
 			}
 			continue
 		}
 
-		for _, p := range posts {
+		for i, p := range posts {
 			dest := filepath.Join(v.c.DestPath, p.DestFileName())
 			f, err := os.Create(dest)
 			if err != nil {
 				return fmt.Errorf("failed to create %s. err=%w", dest, err)
 			}
-			if err := root.ExecuteTemplate(f, t.Name(), nil); err != nil {
+
+			tv.ArticleIndex = i
+			tv.PageTitle = p.Title
+			if err := root.ExecuteTemplate(f, t.Name(), tv); err != nil {
 				return fmt.Errorf("failed to execute template %s. err=%w", t.Name(), err)
 			}
 		}
@@ -110,4 +118,38 @@ func (v View) ensureDestDir(dirName string) error {
 		return fmt.Errorf("failed to make dest dir %s. err=%w", dirName, err)
 	}
 	return nil
+}
+
+type templateVariable struct {
+	SiteTitle    string
+	PageTitle    string
+	BuiltAt      time.Time
+	Posts        []*Post
+	ArticleIndex int
+}
+
+func (v View) templateVariable(posts []*Post) *templateVariable {
+	return &templateVariable{
+		SiteTitle:    v.c.SiteTitle,
+		BuiltAt:      v.c.BuiltAt,
+		Posts:        posts,
+		ArticleIndex: -1,
+	}
+}
+
+func (v View) viewFunc() template.FuncMap {
+	return template.FuncMap{
+		"inc": func(i int) int {
+			return i + 1
+		},
+		"dec": func(i int) int {
+			return i - 1
+		},
+		"lastIndex": func(p []*Post) int {
+			return len(p) - 1
+		},
+		"convert": func(md string) string {
+			return string(blackfriday.Run(([]byte)(md)))
+		},
+	}
 }

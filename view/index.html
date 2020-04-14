@@ -1,0 +1,18 @@
+{{template "partial/former.html" .}}
+
+<section class="articles">
+    <article class="archives">
+        <section>
+            <ul>
+            {{range .Posts}}
+                <li>
+                    <span>{{.Issued.Format "02 Jan 2006"}}</span>
+                    <h4><a href="{{.DestFileName}}">{{.Title}}</a></h4>
+                </li>
+            {{end}}
+            </ul>
+        </section>
+    </article>
+</section>
+
+{{template "partial/last.html" .}}
