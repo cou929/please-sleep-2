@@ -82,7 +82,7 @@ func TestPostRepository_load(t *testing.T) {
 	tests := []struct {
 		name    string
 		fields  fields
-		want    []*Post
+		want    Posts
 		wantErr bool
 	}{
 		{
@@ -112,7 +112,7 @@ file002 content`),
 				},
 				c: &Condition{PostPath: ""},
 			},
-			want: []*Post{
+			want: Posts{
 				&Post{
 					Filename: "file001.md",
 					Raw: ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
@@ -148,20 +148,20 @@ file002 content`),
 
 func TestPostRepository_List(t *testing.T) {
 	type fields struct {
-		posts  []*Post
+		posts  Posts
 		reader reader
 		c      *Condition
 	}
 	tests := []struct {
 		name    string
 		fields  fields
-		want    []*Post
+		want    Posts
 		wantErr bool
 	}{
 		{
 			name: "cache loaded posts",
 			fields: fields{
-				posts: []*Post{
+				posts: Posts{
 					&Post{Filename: "loaded.md"},
 				},
 				reader: &readerMock{
@@ -177,7 +177,7 @@ file001 content`)},
 				},
 				c: &Condition{PostPath: ""},
 			},
-			want: []*Post{
+			want: Posts{
 				&Post{Filename: "loaded.md"},
 			},
 			wantErr: false,
@@ -185,7 +185,7 @@ file001 content`)},
 		{
 			name: "load posts if no cache",
 			fields: fields{
-				posts: ([]*Post)(nil),
+				posts: (Posts)(nil),
 				reader: &readerMock{
 					filesInDir: []fileInfo{
 						&fileInfoMock{
@@ -199,7 +199,37 @@ file001 content`)},
 				},
 				c: &Condition{PostPath: ""},
 			},
-			want: []*Post{
+			want: Posts{
+				&Post{Filename: "file001.md"},
+			},
+			wantErr: false,
+		},
+		{
+			name: "posts are sorted",
+			fields: fields{
+				posts: (Posts)(nil),
+				reader: &readerMock{
+					filesInDir: []fileInfo{
+						&fileInfoMock{
+							name:  "file001.md",
+							isDir: false,
+						},
+						&fileInfoMock{
+							name:  "file002.md",
+							isDir: false,
+						},
+					},
+					contentByName: map[string]([]byte){
+						"file001.md": ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
+file001 content`),
+						"file002.md": ([]byte)(`{"title":"test post","date":"2015-09-21T12:58:19+09:00"}
+file001 content`),
+					},
+				},
+				c: &Condition{PostPath: ""},
+			},
+			want: Posts{
+				&Post{Filename: "file002.md"},
 				&Post{Filename: "file001.md"},
 			},
 			wantErr: false,

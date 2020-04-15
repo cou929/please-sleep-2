@@ -163,3 +163,21 @@ func (p *Post) parseHeader(line string) (*postHeader, error) {
 func (p *Post) DestFileName() string {
 	return strings.TrimSuffix(p.Filename, filepath.Ext(p.Filename)) + p.C.ViewSuffix
 }
+
+// Posts is slice of Post
+type Posts []*Post
+
+// Len is implemented for sort.Interface
+func (p Posts) Len() int {
+	return len(p)
+}
+
+// Less is implemented for sort.Interface
+func (p Posts) Less(i, j int) bool {
+	return p[i].Issued.After(p[j].Issued)
+}
+
+// Swap is implemented for sort.Interface
+func (p Posts) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
+}

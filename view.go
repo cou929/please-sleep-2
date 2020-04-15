@@ -25,7 +25,7 @@ func NewView(c *Condition) (*View, error) {
 }
 
 // Build builds and writes entire contents to distribute
-func (v View) Build(posts []*Post) error {
+func (v View) Build(posts Posts) error {
 	root, err := v.prepareTemplates(v.c.ViewPath, v.c.ViewSuffix, v.viewFunc())
 	if err != nil {
 		return fmt.Errorf("failed to prepare templates. err=%w", err)
@@ -124,11 +124,11 @@ type templateVariable struct {
 	SiteTitle    string
 	PageTitle    string
 	BuiltAt      time.Time
-	Posts        []*Post
+	Posts        Posts
 	ArticleIndex int
 }
 
-func (v View) templateVariable(posts []*Post) *templateVariable {
+func (v View) templateVariable(posts Posts) *templateVariable {
 	return &templateVariable{
 		SiteTitle:    v.c.SiteTitle,
 		BuiltAt:      v.c.BuiltAt,
@@ -145,7 +145,7 @@ func (v View) viewFunc() template.FuncMap {
 		"dec": func(i int) int {
 			return i - 1
 		},
-		"lastIndex": func(p []*Post) int {
+		"lastIndex": func(p Posts) int {
 			return len(p) - 1
 		},
 		"convert": func(md string) string {

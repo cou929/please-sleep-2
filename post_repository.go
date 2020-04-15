@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"sort"
 )
 
 const postSuffix = ".md"
@@ -11,7 +12,7 @@ const postSuffix = ".md"
 // PostRepository loads and parses blog posts
 type PostRepository struct {
 	c      *Condition
-	posts  []*Post
+	posts  Posts
 	reader reader
 }
 
@@ -54,7 +55,7 @@ func NewPostRepository(c *Condition) *PostRepository {
 }
 
 // List retrieves all posts
-func (r *PostRepository) List() ([]*Post, error) {
+func (r *PostRepository) List() (Posts, error) {
 	if len(r.posts) > 0 {
 		return r.posts, nil
 	}
@@ -63,18 +64,19 @@ func (r *PostRepository) List() ([]*Post, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to load posts. err=%w", err)
 	}
+	sort.Sort(posts)
 	r.posts = posts
 
 	return r.posts, nil
 }
 
-func (r *PostRepository) load() ([]*Post, error) {
+func (r *PostRepository) load() (Posts, error) {
 	files, err := r.reader.ReadDir(r.c.PostPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read dir. path=%s, err=%w", r.c.PostPath, err)
 	}
 
-	res := make([]*Post, 0, len(files))
+	res := make(Posts, 0, len(files))
 
 	for _, file := range files {
 		if !r.isTarget(file) {
