@@ -18,10 +18,10 @@ type View struct {
 }
 
 // NewView initializes View
-func NewView(c *Condition) (*View, error) {
+func NewView(c *Condition) *View {
 	return &View{
 		c: c,
-	}, nil
+	}
 }
 
 // Build builds and writes entire contents to distribute
@@ -59,6 +59,7 @@ func (v View) Build(posts Posts) error {
 			if err != nil {
 				return fmt.Errorf("failed to create %s. err=%w", dest, err)
 			}
+			defer f.Close()
 
 			tv.ArticleIndex = i
 			tv.PageTitle = p.Title
@@ -121,19 +122,21 @@ func (v View) ensureDestDir(dirName string) error {
 }
 
 type templateVariable struct {
-	SiteTitle    string
-	PageTitle    string
-	BuiltAt      time.Time
-	Posts        Posts
-	ArticleIndex int
+	SiteTitle     string
+	PageTitle     string
+	BuiltAt       time.Time
+	Posts         Posts
+	ArticleIndex  int
+	SiteShortDesc string
 }
 
 func (v View) templateVariable(posts Posts) *templateVariable {
 	return &templateVariable{
-		SiteTitle:    v.c.SiteTitle,
-		BuiltAt:      v.c.BuiltAt,
-		Posts:        posts,
-		ArticleIndex: -1,
+		SiteTitle:     v.c.SiteTitle,
+		BuiltAt:       v.c.BuiltAt,
+		Posts:         posts,
+		ArticleIndex:  -1,
+		SiteShortDesc: v.c.SiteShortDesc,
 	}
 }
 
