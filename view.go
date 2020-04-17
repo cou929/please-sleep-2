@@ -34,8 +34,6 @@ func (v View) Build(posts Posts) error {
 		return fmt.Errorf("failed to ensure dest dir %s. err=%w", v.c.DestPath, err)
 	}
 
-	tv := v.templateVariable(posts)
-
 	for _, t := range root.Templates() {
 		if !v.isDriver(t.Name()) {
 			continue
@@ -47,6 +45,8 @@ func (v View) Build(posts Posts) error {
 			if err != nil {
 				return fmt.Errorf("failed to create %s. err=%w", dest, err)
 			}
+			defer f.Close()
+			tv := v.templateVariable(posts)
 			if err := root.ExecuteTemplate(f, t.Name(), tv); err != nil {
 				return fmt.Errorf("failed to execute template %s. err=%w", t.Name(), err)
 			}
@@ -61,6 +61,7 @@ func (v View) Build(posts Posts) error {
 			}
 			defer f.Close()
 
+			tv := v.templateVariable(posts)
 			tv.ArticleIndex = i
 			tv.PageTitle = p.Title
 			if err := root.ExecuteTemplate(f, t.Name(), tv); err != nil {
