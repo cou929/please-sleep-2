@@ -1,0 +1,549 @@
+{"title":"AWS Summit Tokyo 2015 1 日目のメモ","date":"2015-06-03T03:16:45+09:00","tags":["conference"]}
+
+[AWS Summit Tokyo 2015｜EventRegist（イベントレジスト）](http://eventregist.com/e/awssummittokyo2015) のメモです。
+
+## SmartNews のデータサイエンティストの高速イテレーションを支える広告システム
+
+[資料](http://www.slideshare.net/smartnews/aws-summit-tokyo2015newsads)
+
+- smartnews の紹介
+  - 417万 MAU
+  - 1335 万時間 spent
+  - 1200万 DL
+  - アルゴリズムによる記事表示
+     - We're machine learning company
+- 広告フォーマット (smartnews 枠)
+  - Standard Ads (infeed)
+  - Premium Movie Ads
+- 広告システムに求められるもの
+  - 大量のリクエストを短時間でさばく
+  - クリエイティブの効率のいい配信
+  - ログを分析して最適化
+  - 主・面ごとにレポーティング
+  - 審査
+- なぜ AWS?
+  - http://www.slideshare.net/smartnews/20150415-smartnews-technightrev3
+  - 詳しいエンジニアはいるがインフラ専任はいない
+  - コアビジネスに注力したい
+  - そのために外部のマネージドサービスを使う
+- 広告システムにおける機械学習・最適化タスク
+  - CTR/CVR 予測
+  - クリエイティブ最適化 (どのクリエイティブが一番いいのか)
+  - CPA 最適化
+  - 予算スムージング
+  - ad allocation optimize
+- 重要なのは AB テスト
+  - http://developer.smartnews.com/blog/2015/05/20/smartnews-ads-data-science/
+  - 意思決定のための判断材料のために AB テスト
+  - 4+ running tests / day
+  - 10+ times testing / month
+- AB テストのサイクル
+  - 仮説を立てる
+  - 開発をする。実験計画、ロジック実装
+  - ABテストを実施
+  - 結果の集計分析
+  - 意思決定をする
+- ログデータの分析 (仮説をたてるフェーズのための)
+  - 過去ログを長期間さかのぼっていろんな分析をしたい
+  - 課題
+     - データサイズ
+     - カラムを増やしたい
+     - 投げるクエリはアドホック
+  - 解決
+     - S3 + EMR + Presto
+- ロジック実装
+  - プロダクションで新しいロジックを動かしてみたい
+  - 課題
+     - 複雑なロジックほど計算時間がかかる
+         - リクエスト量が大きいので大変
+         - パフォーマンス改善には時間がかかるのでサイクルが遅くなる
+     - 精度がいいかを試す目的なので、時間をかけたくない
+  - 解決
+     - EMR (+ Hivemall) + DynamoDB
+         - EMR (Hivemall) で手軽の予測モデルを構築
+     - dynamodb を広告インデックスにしている
+         - 新ロジックで別インデックスを作成し、配信時にそちらを見る
+     - データサイエンティストはロジックに集中できるメリット
+- テスト結果の確認、レポーティング
+  - 課題
+     - いちいちクエリをなげてエクセルで集計などは面倒
+     - ツールの作りこみもしたくない
+  - Redshift + Chartio
+     - 毎時のバッチでログデータを集計して Chartio で可視化
+
+エンジニアのパート
+
+- 技術選定の論点
+  - Speed
+  - Availability
+  - Scalability
+  - Operationally
+     - 楽に運用
+  - Decouple-able
+     - 疎結合に。マイクロサービスで運用しているので
+  - People-Friendly
+     - エンジニア、サイエンティスト
+- CDN/LB - EC2 (nginx|java|fluentd) - RDS (広告在庫、予算) / Redis (配信インデックス、リアルタイムのメトリクス) / DynamoDB (オーディエンスデータ、ターゲティングデータ) - S3 / Kinesis
+- DynamoDB 選定
+  - HBase, Redis, Memcached, Cassandra と比較
+  - Availability, Scalability は Cassandra か DynamoDB
+  - Operationally 観点では Cassandra が低い
+  - よって DynamoDB
+- No single Engineer Needed To Operate It
+- dynamo に入っているオーディエンスデータ例
+  - device_id (Hash Key)
+  - media (Range Key)
+  - scores (map <campaign, score> score)
+  - tags (set <tag>)
+     - 興味が有ることのタグ。car, house など
+  - abtest_label, abtest_group
+- EMR
+  - Yarn + Hive + Spark + Python + alpha
+  - データは全て Hive でマネージして S3 に保存
+  - EMR クラスタに状態を持たない
+  - HDFS tmp/cache レイヤーとして使う (`dfs.replication = 1`)
+  - 用途によってクラスタを増減させる
+     - 重いことをやるときにクラスタを増やすなど
+     - 自前のコマンドを準備している
+- hql で dynamo に書き込めるようにしている
+  - `ddb_update(device_id, 'scores_my_test', scores, ...)` という UDF で
+  - https://github.com/y-lan/monkey-spanner
+- 分散処理する必要がないときは一台でやってしまう
+  - `r3.8xlarge` が大好き
+  - spot instance で安く使える
+- redshift でバッチを回して Chartio でレポーティング
+- Redshift と Presto をなぜ同時につかっているのか
+  - Presto は S3 や RDS などいろんなデータソースを使えるので。また OpenSource などで独自に拡張できる
+  - EMR には不満があるわけではない。速度面など
+- 最近の取り組み
+  - Kinesis
+  - CTR 予測にはデータの鮮度が非常に大事。新しいデータを使わないと予測の精度がさがる
+  - Kinesis でリアルタイム性を高める
+  - Kinesis - Kinesis-Enabled apps (Hive/Spark/Presto) - その後の分析
+- AWS への wish list
+  - Tokyo region で lambda を使いたい
+  - DynamoDB の write キャパシティをもっと柔軟に制御したい
+  - TIme-to-live サポート for dynamo
+  - UDF in Redshift
+
+### 感想
+
+- 「マネージドサービスをできるだけ使うようにする」など共感できるポイントが多かった
+- AB テストをどんどんやれるようにする仕組みはいい感じ。月に 10 本もテストをまわしているのはすごい
+  - [blog にあった 20 % ルールの話](http://developer.smartnews.com/blog/2015/05/20/smartnews-ads-data-science/) はセッションでは出てこなかったけれども、こうした制度面も含めて
+- [chartio](https://chartio.com/) は別の勉強会でも名前が出ていたので気になる
+
+## freee の成長と AWS
+
+- 創業から 2 年で 30 万事業所が登録
+- 創業期 (2012-10)
+  - メンバー 5 名
+  - ベータ版
+     - rails で heroku にデプロイ
+     - 銀行情報同期バッチはさくら VPS で
+  - これを AWS 化
+     - VPC は使っていなかった
+     - DB とバッチを AWS に移行
+     - app は heroku
+     - heroku - rds (tokyo region) のレイテンシが気になる
+  - その後すべて AWS 化
+     - バッチ処理を SQS で非同期化
+     - github, jenkins deploy, hipchat 導入
+     - ログ収集をまだしていない
+- 1st リリース (2014-03)
+  - メンバー 10 名
+  - サーバは 20 台ほど
+  - VPC, fluentd, Nagios 導入
+  - Resque で非同期処理
+  - CloudPack で VPC 移行が簡単だった
+  - しばらくはインフラはこのままでアプリの機能追加に集中
+  - このころインフラエンジニア 0 名
+- 第一次成長期 (2013-10)
+  - メンバー 28 名
+  - サーバ台数は 50 台くらい
+  - インフラ専任のエンジニアが入社
+  - VPN で踏み台に入れるようにした
+  - Nagios -> Zabbix
+     - 長期的なメトリクスをとりたかった
+  - Redis を ElasticCache に移行
+     - それまでは非同期処理が 1 インスタンスでしかできなかった (Redis と JobWorker が密結合していた)
+  - es + kibana の導入
+     - いままでは ssh してログを見ていた
+  - モバイルアプリリリース
+     - api 用のインスタンス、ELB を追加
+  - はじめての確定申告
+     - サポートチケット数が急増する
+  - android アプリもリリース
+     - iOS 時に作った基盤があるので、インフラはやることなし
+  - 失敗
+     - Drop DB 事件
+         - 開発環境の DB を消すスクリプト
+         - chef cookbook を適用したらプロダクションを向いた
+         - Drop DB が production に走ってしまった
+         - zabbix の監視で気がつく
+         - Restore to Point in time で復旧
+         - 対策として db ユーザーの grant を細かく分けた
+- 第二次成長期 (2014-05)
+  - メンバー 50 名
+  - 登録事業所数が 10 万 -> 30 万
+  - 新サービスをリリース (クラウド給与)
+  - サービスが 2 つになったので統一した認証機構が必要になった (シングルサインオン)
+  - 共通認証基盤をリリース
+  - 失敗
+     - security group の数が上限の 100 に達した
+         - サービスが増えるごとに VPC を分けるなど、ネットワークの設計を見なおししなかった
+         - ACL, VPC, ネットワークのセグメントを再設計
+     - index 貼り忘れでサービスダウン寸前
+- これから (2015-04)
+  - メンバー 100 名
+  - 開発面の課題
+     - DB が master しかないのでスケールをどうするか
+     - サービスを細かくわけないとメンテナンスが追いつかない
+     - サーバ台数が増えすぎている
+     - ACL, VPC の再設計
+     - レイテンシの改善
+     - MySQL 5.6 へのアップデート
+- まとめ
+  - サービス運用は予測できない
+     - 予測して設計してもうまくいかないので、都度柔軟にインフラを設計変更するほうがいい
+  - AWS の新サービスリリースにうまくのって利用してきた
+  - インフラを AWS にまかせて少人数でリリース・運用できた
+- 番外編。解析基盤の改善
+  - 初期
+     - fluentd - S3/RDS - mongodb (map reduce) - insight (自前の可視化ツール) - 人
+  - 現在
+     - fluentd - S3/RDS/ElasticCache - Kibana/Redshift - insight - 人
+- 番外編。作業のコード化
+  - 個人のシェルの history にしか残らないようなコマンドとか
+  - それをなくすために
+     - capistrano
+     - chef
+     - ansible
+     - fabric
+         - 開発時期によってどれを使うかが違っている
+     - serverspec
+
+### 感想
+
+- サービス運用の生々しい話で面白かった。サービスに対してマイナスイメージになるんじゃないかというほど、カッコ悪いところもさらけ出していた
+- サービス運用は予測が難しいので、都度柔軟に対応するのが大事
+
+## コマース用スマフォアプリにおける AWS 構成 ＆ Amazon Cognito 活用事例
+
+- SHOPLIST.com の構成、負荷
+  - 規模
+     - 年間取引高 100 億円 (2014)
+     - 単月は 10 億 (2015-04) (セール期間)
+     - 90% はスマホ経由
+  - 構成
+     - Route53 - ELB - EC2 - EC2 DB instance (MariaDB/SlasticSearch) / ElasticCache (Redis)
+         - Redshift - EMR
+         - Cloudfront - nginx (サムネイル処理など) - S3
+  - OS/middleware
+     - CentOS6.4
+     - apache2.2/php5.4
+     - elasticcache (redis)
+     - MariaDB 10.0.13
+     - ES 1.5.2
+     - EMR (spark 1.3.1)
+  - インスタンスタイプ
+     - 3 ヶ月から半年で見なおしている
+     - web: c2.2xlarge
+     - db: r3.4xlarge
+     - cache: cache.r3.large
+     - batch: m3.xlarge
+  - セール
+     - リクエスト数 5 ~ 10 倍
+     - 1000 req/sec
+     - latency は 900ms いかにしている
+  - 「インフラコストを売上の X % 以下にする」という目標を立てている
+     - 具体値は出せないが 1 % 以下
+  - 画像配信
+     - cloudfront
+     - origin S3
+     - サムネを nginx/SMALL LIGHT で
+     - reports & analytics 機能が使える
+     - reserved 契約
+- Cognito の活用事例
+  - 選定理由
+     - 極力 EC2 を経由せずにアプリ・新サービスからのアクセスを捌きたい
+     - SHOPLIST.com の認証基盤を今後新サービスにも展開したい
+        - シングルサインオンの実装などが面倒なので
+     - アプリのパーソナライズデータやユーザーの行動情報を活用したい
+  - 苦労した点
+     - 既存の認証基盤を活用する場合、id 管理にのみ使用するのであれば一手間増えるだけになる
+     - デバイス間のデータ同期の仕組みを新規で作らなくていいのはメリット
+     - Latency が気になるレベルである
+         - tokyo region にないため
+  - 実装概要
+     - developer authenticated identities を使用
+     - ゲストモードにも対応
+- 今後の活用予定
+  - kinesis と DynamoDB を使いたい
+  - kinesis で集計のリアルタイム性を高めたい
+  - dynamodb に elasticcache などから既存のデータを移したい
+     - redis キー数が増えた時に分割するしか無いけれど dynamo はスケールする
+     - コスト的にも問題なかった
+- 今後 AWS に期待したいこと
+  - Machine learning
+     - 不正検知、需要予測など
+     - コストも安そう
+     - 統計の知識が少なくても、エンジニア手動で使える
+     - 少しずつ使い始めている
+  - Aurora
+     - 無停止 & 柔軟な RDB 拡張
+  - lambda
+     - コスト面で注目
+     - 最低限のインスタンスでサービス実現
+         - バッチ処理でサムネ作成をするのではなく、イベントに応じて処理を流してコストを下げられるのでは
+  - 欲しい機能
+     - 無停止のインスタンスタイプの変更
+     - 不正アクセス・攻撃をモニター・検知する仕組み
+     - EC2 を使わずに、コストを下げられるようなサービス (lambda などのような)
+
+### 感想
+
+- インフラコストを売上の n % 以下にするという目標のたて方が面白かった
+- EC2費用の割合が一番大きいので、インスタンスタイプを定期的に見なおしたり、lambda と組み合わせて EC2 なしの仕組みに変えられないか検証するなど、色々取り組んでいるよう
+
+## AWS Elastic Beanstalk, AWS OpsWorks, AWS CodeDeploy, AWS CloudFormation を使った自動デプロイ
+
+- 開発・デプロイに関わるフェーズごとの対応サービス
+  - coding
+     - Code Commit (まだ使えない)
+  - build/test
+     - Code Pipeline (まだ使えない)
+  - deploy, provisin, monitor
+     - Beanstalk, Opsworks
+     - Code Deploy (deploy 専用)
+     - cloud formation (provision 専用)
+     - cloud watch (monitor 専用)
+- beanstalk
+  - 定番構成の構築、アプリデプロイの自動化サービス
+  - ユーザーはコードをアップするだけ
+  - Autoscaling にも対応
+- opsworks
+  - 多用なアーキテクチャをサポートするデプロイ・管理サービス
+  - beanstalk に比べて複雑な構成も実現できる
+  - chef のレシピを使う
+  - instance 内にエージェントが入ってレシピをキックする
+- code deploy
+  - デプロイに特化したサービス
+  - instance 内にエージェントがインストールされる
+  - deployment group を作ってデプロイ対象を定義
+     - tag でフィルタする
+  - グループ内に一度にデプロイしたり、半分にしたり、一台ずつにしたりなど、設定できる
+- cloudformation
+  - 設定管理、クラウドのオーケストレーション
+  - json でテンプレートを管理
+- Wordpress を題材に紹介
+  - イメージ
+     - ELB - EC2 - RDS
+         - S3 (assets)
+     - code は github
+- beanstalk
+  - イメージ
+     - environment を作る
+     - インスタンスがあがる
+         - Host Manager がインストールされている
+     - HM が beanstalk と通信して動作する
+  - 流れ
+     - Github に push
+     - デプロイ担当者の手元に clone
+     - zip or war ファイルを beanstalk に upload
+         - `git archive` や `eb` コマンドなど
+         - upload したものは s3 にもコピーされる
+     - HM がデプロイする
+  - デプロイの仕方
+     - 一台ずつ、半分ずつなどは設定できる
+  - ELB を使いまわしたい場合などは、このように既存のサーバにデプロイしていくのはあり
+     - pre warming などの関係
+  - configuration file で動作中のコンテナをカスタマイズできる
+     - ami を作りなおさなくても、動いているインスタンスに動的に変更を加える
+  - rolling update
+     - Autoscaling group 内のインスタンスをローリングアップデートしてくれる
+     - 内部的には cloud formation の update policy を使う
+- opsworks
+  - イメージ
+     - php app server レイヤーを作成
+     - php app server レイヤーにインスタンスを追加
+     - インスタンスを起動
+     - エージェントが自動でインストールされる
+     - エージェントが code を github からとってきてデプロイ
+  - deploy.json に db 接続先やユーザー名などを書いておける
+     - これを chef recipi から参照する
+     - レシピ内のマジックナンバーを無くせる
+  - 5 つのライフサイクルイベント
+     - setup
+     - configure
+         - 同じグループ内で新しいインスタンスが増減した場合に発生するイベント
+     - deploy
+     - undeploy
+     - shutdown
+  - chef のレシピを github に push
+     - 「カスタム cookbook の更新」コマンドを opswork に投げるとインスタンスがレシピを pull
+     - 「レシピの実行」コマンドを送るとレシピを実行
+- code deploy
+  - イメージ
+     - インスタンスにエージェントをインストールしてタグを付けておく
+     - deployment group でタグごとに設定する
+  - 流れ
+     - github に AppSpec ファイルを追加する
+     - デプロイコマンドを送る
+     - エージェントが polling
+     - AppSpec に応じて動作
+  - configuration
+     - どれを (revision など)、どうやって (一気に、一台ずつ)、どこに (tag でフィルタ)
+  - hooks
+     - BeforeInstall, AfterInstall などのフックもある
+  - cloudformation との連携
+     - code deploy だけではプロビジョニングはできない
+- cloudformation
+  - イメージ
+     - テンプレートに記述
+     - cfn-init により app のアーカイブファイルをダウンロード、展開
+  - template
+     - json
+     - parameters
+     - resources
+  - プロビジョニングにフォーカスしている
+     - デプロイを継続的に行うようなものではない
+  - 環境のカスタマイズ
+     - テンプレートを書き換えて更新する
+
+### 感想
+
+- それぞれのサービスの比較・使い分けのような内容を期待していたけれど、その部分の説明があまりなかった
+- 単機能のサービスは利用を検討してみてもいいかもしれない
+
+## Amazon EBS パフォーマンスベンチマーク 2015
+
+- EBS おさらい
+  - EC2 インスタンスにアタッチして使う、ブロックレベルのストレージサービス
+  - snapshot によるバックアップ、ディスクの暗号化
+  - 99.999% の可用性
+  - 最大 16TB まで、1GB単位で使う容量を指定する (magnetic は 1TB まで)
+  - 同一 az のみ
+     - snapshot からは任意の az に復元できる
+  - ひとつのインスタンスに複数の EBS をアタッチできる
+  - ひとつの EBS を複数のインスタンスから参照はできない
+     - つけかえはできる
+- EBS のアーキテクチャ
+  - AZ 内の複数の HW にレプリケートされているので、ユーザーが意識しなくて良い
+  - 実態はネットワーク接続型のストレージだが、ユーザーは意識しなくて良い
+- ボリュームタイプ
+  - General purpose (ssd)
+     - デフォルト
+     - IOPS: 1GB あたり 3iops を常時確保
+     - 1000GB 以下では 一時的に IO 性能を 3000iops まで引き上げるバースト機能がある
+         - OS 起動時にオンにして、初期構築を早めるなど
+         - バースト継続時間は IO クレジットの残高で決まる。使っていない時に貯金が貯まって使うと減るイメージ
+     - スループットは最大 160MB/sec
+         - 容量によって可変
+  - provisioned iops (ssd)
+     - より高パフォーマンスが必要な場合
+     - 100 ~ 20000 IOPS で指定する。容量の 30 倍が上限
+     - スループットは最大 320MB/sec
+         - 容量によって可変
+  - magnetic
+     - より低コストにしたい場合
+     - 平均 100 IOPS
+     - スループット 40 ~ 90 MB/sec
+     - 唯一 IO 回数による課金がある
+  - snapshot を経由してボリュームタイプを変更できる
+- EBS のパフォーマンスを律速する要素
+  - EC2 インスタンス側のスループット
+     - EBS-Optimized オプションを有効化する
+         - EBS 間との独立した帯域を確保する
+         - 大きいインスタンスほど確保する帯域が大きくなる
+     - インスタンスごとにEBSスループットの上限があるので、達していないか確認する
+         - cloudwatch の volume read/write bytes の合計値
+         - iostat や perfmon でも
+     - 上限に達した場合は、インスタンスタイプを大きなものにあげる
+  - EBS 自体の IO 処理性能 (IOPS)
+     - EBS の実績 IOPS を確認する
+         - cloudwatch の volume read/write bytes
+     - 上限に達している場合は
+         - タイプを変更
+         - スペックを変更
+         - general -> 容量を増やす、PIOPS -> パラメータを増やすなど
+  - EBS ボリュームのスループット上限
+     - 個々のボリュームのスループットを確認する
+         - cloud watch の volume read/write bytes
+     - 上限に達している場合はボリュームの変更
+         - タイプの変更 magnetic -> general ssd -> POPPS
+- ebs の pre-warming
+  - EBS の各ブロックへの初回アクセスは IOPS が 50 % 劣化する
+  - そのため pre-warming が必要
+  - 運用上の理由で、例えば auto scaling でインスタンスを立ち上げる場合などは pre-warming はできないこともある
+  - `dd` コマンドでいい
+- RAID 構成
+  - RAID0 を組めば単体の EBS の性能をあげられる
+  - 基本的に裏で冗長化しているので RAID0 でいい
+  - それでもパフォーマンスが足りなければインスタンスストアの利用も検討する
+- ベンチマーク
+  - 環境
+     - c3.8xlarge
+     - amazon linux
+     - xfs
+     - fio 2.1.5
+     - 各タイプのシングルボリュームと、汎用SSDx6 の RAID0 でベンチをとる
+  - 8kb/16kb ブロック ランダム読みこみ
+     - 使用通りの性能がでる
+     - その上限以上のパフォーマンスを出したい場合は RAID0 で
+  - 4MBブロック ランダム読み込み
+     - スループットが上限に達するので、IOPS が小さくなる
+     - 大きいファイルの読み書きをしたい場合はスループットで律速するので IOPS をむやみにあげても無駄になるかもしれないので注意
+  - 8kb ブロック ランダム読み書き
+     - 読み込みと傾向は同じ
+  - 4MB ブロック ランダム読み書き
+     - 読み込みと傾向は同じ
+- インスタンスストアと EBS
+  - インスタンスタイプごとに、追加コストなしでインスタンスストアが利用できる
+  - インスタンスの足元のディスクなので EBS の上限とは関係なくなる
+  - インスタンスをとめる (stopする) とデータが無くなる
+     - reboot では消去されない
+  - アプリの一時的なデータ置き場や分散ファイルシステム
+  - コストが 0 で高速なので、揮発性が許容されるユースケースではおすすめ
+- インスタンスストアの性能
+  - 環境
+     - i2.8xlarge
+     - amazon linux
+     - xfs
+     - 800GB x 8 (RAID0)
+     - fio 2.1.5
+  - ランダム読み込み
+     - 最大 40万 IOPS
+     - スループットは最大 3.5GB/sec
+     - ブロックサイズが増えるごとにスループットがボトルネックになって IOPS が下がっていく
+  - ランダム読み書き
+     - 読み込みのみと比べて少し落ちる
+     - 35万 IOPS
+- ボリュームの暗号化
+  - AES-256 による暗号化
+  - ハードウェアでやるので暗号化してもパフォーマンス劣化はないと、ドキュメントでは言われている
+- 暗号化有無でベンチマーク
+  - 環境
+     - c3.8xlarge
+  - 結果
+     - IOPS は変化なし
+     - CPU 利用率もほぼ差がない
+- 典型的な構成例
+  - 小さいデータへのアクセスが多い場合
+     - 必要 IOPS が得られるように EBS を構成する
+         - ブロックサイズが小さいので、スループットがボトルネックにならない。IOPS ベースで決める
+     - 必要な IOPS ベースで確保する容量を決める
+  - 大きいデータへのアクセスが多い場合
+     - IOPS ではなくスループットベースで決める
+     - 不必要に IOPS を高くしない
+  - コスト優先
+     - magnetic を組み合わせる
+     - 起動ボリュームは汎用　SSD で、他を magnetic にするなど
+  - 極めて高い IOPS が必要
+     - インスタンスストアを組み合わせる
+     - 起動ボリュームは EBS、ほかはインスタンスストアなど
+
+### 感想
+
+- 発表の構成が明確でわかりやすく、またドキュメントだけではわからない情報も盛り込んであって、良い発表だった
+- いまのシステム的には EBS のチューニングは必要無さそうだけど、packer build の高速化ができたりしないかなとはふと思った
