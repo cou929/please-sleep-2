@@ -1,15 +1,16 @@
 BINNAME=ps2
 DISTDIR=dist
 SRCS := $(shell find . -type f -name '*.go')
+POSTS := $(shell find ./post -type f)
 
 all: test clean run asset
 
 $(BINNAME): $(SRCS)
 	go build -o $(BINNAME)
 
-.PHONY: run
-run:
-	go run .
+dist: $(BINNAME) $(POSTS)
+	make clean
+	./$(BINNAME)
 
 .PHONY: test
 test:
@@ -17,7 +18,6 @@ test:
 
 .PHONY: clean
 clean:
-	rm -rf $(BINNAME)
 	rm -rf $(DISTDIR)
 
 .PHONY: distinit
@@ -28,3 +28,10 @@ distinit: clean
 asset: distinit
 	cp -r view/static/* dist/
 	cp -r post/images dist/
+
+.PHONY: watch
+watch:
+	while true; do \
+		make dist --silent; \
+		sleep 3; \
+	done
