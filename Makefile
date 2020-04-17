@@ -1,34 +1,31 @@
-BINNAME=ps2
-DISTDIR=dist
 SRCS := $(shell find . -type f -name '*.go')
 POSTS := $(shell find ./post -type f)
 
-all: test clean dist
+all: test dist
 
-$(BINNAME): $(SRCS)
-	go build -o $(BINNAME)
-
-dist: $(BINNAME) $(POSTS)
+dist: $(POSTS) $(SRCS)
 	make clean
-	./$(BINNAME)
+	make run
 	make asset
+
+.PHONY: clean
+clean:
+	rm -rf dist
+
+.PHONY: run
+run:
+	mkdir -p dist
+	go run .
+
+.PHONY: asset
+asset:
+	mkdir -p dist
+	cp -r view/static/* dist/
+	cp -r post/images dist/
 
 .PHONY: test
 test:
 	go test -v ./...
-
-.PHONY: clean
-clean:
-	rm -rf $(DISTDIR)
-
-.PHONY: distinit
-distinit: clean
-	mkdir -p dist
-
-.PHONY: asset
-asset: distinit
-	cp -r view/static/* dist/
-	cp -r post/images dist/
 
 .PHONY: watch
 watch:
