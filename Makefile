@@ -3,7 +3,7 @@ DISTDIR=dist
 SRCS := $(shell find . -type f -name '*.go')
 POSTS := $(shell find ./post -type f)
 
-all: test clean run asset
+all: test clean dist
 
 $(BINNAME): $(SRCS)
 	go build -o $(BINNAME)
@@ -11,6 +11,7 @@ $(BINNAME): $(SRCS)
 dist: $(BINNAME) $(POSTS)
 	make clean
 	./$(BINNAME)
+	make asset
 
 .PHONY: test
 test:
