@@ -1,9 +1,10 @@
 SRCS := $(shell find . -type f -name '*.go')
 POSTS := $(shell find ./post -type f)
+VIEWS := $(shell find ./view -type f)
 
 all: test dist
 
-dist: $(POSTS) $(SRCS)
+dist: $(POSTS) $(SRCS) $(VIEWS)
 	make clean
 	make run
 	make asset
@@ -31,5 +32,5 @@ test:
 watch:
 	while true; do \
 		make dist --silent; \
-		sleep 3; \
+		sleep 1; \
 	done

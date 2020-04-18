@@ -331,6 +331,9 @@ ol,
 ul {
   margin: 0 0 1.618em 1.618em;
 }
+ul ul {
+  margin-bottom: 0;
+}
 dl dt {
   font-weight: bold;
 }
@@ -338,19 +341,12 @@ dl dd {
   margin-bottom: 1.618em;
 }
 blockquote {
-  margin: 0 -1em 1.618em;
-  padding: 2.618em 2.618em 1.2em;
-  background: #f9f9f9;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
+  padding: 0 1em;
+  border-left: 5px solid #eeeeee;
+  color: #6a737d;
 }
 blockquote p {
-  margin-bottom: 1em;
   font-style: italic;
-  font-size: 1.1em;
 }
 /* LAYOUT */
 #wrapper {
@@ -670,4 +666,43 @@ footer .icons {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+}
+
+table {
+  padding: 0;
+  width: 100%;
+}
+
+table tr {
+  border-top: 1px solid #cccccc;
+  background-color: white;
+  margin: 0;
+  padding: 0;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+table tr th {
+  font-weight: bold;
+  border: 1px solid #cccccc;
+  text-align: center;
+  margin: 0;
+  padding: 6px 13px;
+}
+
+table tr td {
+  border: 1px solid #cccccc;
+  text-align: left;
+  margin: 0;
+  padding: 6px 13px;
+}
+
+table tr th :first-child, table tr td :first-child {
+  margin-top: 0;
+}
+
+table tr th :last-child, table tr td :last-child {
+  margin-bottom: 0;
 }
