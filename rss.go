@@ -30,7 +30,7 @@ func (r RSS) Build(posts Posts) error {
 		Title:       r.c.SiteTitle,
 		Link:        &feeds.Link{Href: r.c.SiteURL},
 		Description: r.c.SiteShortDesc,
-		Author:      &feeds.Author{Name: r.c.AuthorName, Email: r.c.AuthorName},
+		Author:      &feeds.Author{Name: r.c.AuthorName, Email: r.c.AuthorMail},
 		Created:     r.c.BuiltAt,
 	}
 
@@ -44,7 +44,7 @@ func (r RSS) Build(posts Posts) error {
 			Title:       p.Title,
 			Link:        &feeds.Link{Href: strings.Join([]string{r.c.SiteURL, p.Filename}, "")},
 			Description: string(blackfriday.Run(([]byte)(p.Content))),
-			Author:      &feeds.Author{Name: r.c.AuthorName, Email: r.c.AuthorName},
+			Author:      &feeds.Author{Name: r.c.AuthorName, Email: r.c.AuthorMail},
 			Created:     p.Issued,
 		}
 		items = append(items, item)
