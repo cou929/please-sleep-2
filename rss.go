@@ -42,7 +42,7 @@ func (r RSS) Build(posts Posts) error {
 	for _, p := range posts[:size] {
 		item := &feeds.Item{
 			Title:       p.Title,
-			Link:        &feeds.Link{Href: strings.Join([]string{r.c.SiteURL, p.Filename}, "")},
+			Link:        &feeds.Link{Href: strings.Join([]string{r.c.SiteURL, p.DestFileName()}, "")},
 			Description: string(blackfriday.Run(([]byte)(p.Content))),
 			Author:      &feeds.Author{Name: r.c.AuthorName, Email: r.c.AuthorMail},
 			Created:     p.Issued,
