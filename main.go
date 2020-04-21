@@ -29,7 +29,7 @@ func NewCondition() *Condition {
 		DestPath:      "dist",
 		SiteTitle:     "Please Sleep",
 		BuiltAt:       time.Now(),
-		SiteURL:       "http://please-sleep.cou929.nu/",
+		SiteURL:       "https://please-sleep.cou929.nu/",
 		SiteShortDesc: "From notes on my laptop",
 		AuthorName:    "Kosei Moriyama",
 		AuthorMail:    "cou929@gmail.com",
