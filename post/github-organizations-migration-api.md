@@ -64,4 +64,32 @@ curl -H "Authorization: token GITHUB_ACCESS_TOKEN" -X DELETE \
 https://api.github.com/orgs/org_name/migrations/id/repos/repo_name/lock
 ```
 
+## アーカイブの内容
+
+ソースコードは git 形式で、issue, pull request, milestone 等々はすべて json 形式で保存されている。また issue 等に添付されたファイルもそのまま入っている。ヒューマンリーダブルではないが、バックアップにはなっている。
+
+```
+attachments/
+attachments_000001.json
+commit_comments_000001.json
+issue_comments_000001.json
+issue_events_000001.json
+issues_000001.json
+milestones_000001.json
+organizations_000001.json
+projects_000001.json
+protected_branches_000001.json
+pull_request_review_comments_000001.json
+pull_request_reviews_000001.json
+pull_requests_000001.json
+releases_000001.json
+repositories/
+repositories_000001.json
+repository_files/
+repository_files_000001.json
+schema.json
+teams_000001.json
+users_000001.json
+```
+
 <iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=pleasesleep-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=B07JLJSDMJ&linkId=f50c7f8d9fd59c3bf1e9d7030f5a79ca"></iframe>
