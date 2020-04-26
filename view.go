@@ -10,7 +10,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday/v2"
 )
 
@@ -175,7 +174,7 @@ func (v View) viewFunc() template.FuncMap {
 			return len(p) - 1
 		},
 		"convert": func(md string) string {
-			return string(bluemonday.UGCPolicy().SanitizeBytes(blackfriday.Run(([]byte)(md))))
+			return string(blackfriday.Run(([]byte)(md)))
 		},
 		"shorten": func(content string) string {
 			parser := blackfriday.New()
@@ -199,7 +198,7 @@ func (v View) viewFunc() template.FuncMap {
 				l = len(r)
 				suf = ""
 			}
-			return bluemonday.UGCPolicy().Sanitize(strings.Replace(string(r[0:l]), "\n", " ", -1) + suf)
+			return strings.Replace(string(r[0:l]), "\n", " ", -1) + suf
 		},
 	}
 }
