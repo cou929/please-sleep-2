@@ -10,6 +10,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday/v2"
 )
 
@@ -174,17 +175,31 @@ func (v View) viewFunc() template.FuncMap {
 			return len(p) - 1
 		},
 		"convert": func(md string) string {
-			return string(blackfriday.Run(([]byte)(md)))
+			return string(bluemonday.UGCPolicy().SanitizeBytes(blackfriday.Run(([]byte)(md))))
 		},
 		"shorten": func(content string) string {
-			r := []rune(content)
+			parser := blackfriday.New()
+			ast := parser.Parse([]byte(content))
+			texts := ""
+			ast.Walk(func(node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
+				if node.Type == blackfriday.Text || node.Type == blackfriday.Code {
+					texts = strings.Join([]string{texts, string(node.Literal)}, "")
+				}
+				r := []rune(texts)
+				if len(r) > ogDescLen {
+					return blackfriday.Terminate
+				}
+				return blackfriday.GoToNext
+			})
+
+			r := []rune(texts)
 			l := ogDescLen
 			suf := "…"
 			if len(r) < ogDescLen {
 				l = len(r)
 				suf = ""
 			}
-			return strings.Replace(string(r[0:l]), "\n", " ", -1) + suf
+			return bluemonday.UGCPolicy().Sanitize(strings.Replace(string(r[0:l]), "\n", " ", -1) + suf)
 		},
 	}
 }
