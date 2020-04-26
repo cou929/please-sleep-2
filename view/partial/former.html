@@ -24,6 +24,9 @@
     {{$ogDesc = shorten $post.Content}}
     {{end}}
     <meta property="og:description" content="{{$ogDesc}}" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="{{.TwitterAccount}}" />
 </head>
 
 <body>

@@ -140,23 +140,25 @@ func (v View) ensureDestDir(dirName string) error {
 }
 
 type templateVariable struct {
-	SiteTitle     string
-	PageTitle     string
-	BuiltAt       time.Time
-	Posts         Posts
-	ArticleIndex  int
-	SiteShortDesc string
-	OgType        string
-	URL           *url.URL
+	SiteTitle      string
+	PageTitle      string
+	BuiltAt        time.Time
+	Posts          Posts
+	ArticleIndex   int
+	SiteShortDesc  string
+	OgType         string
+	URL            *url.URL
+	TwitterAccount string
 }
 
 func (v View) templateVariable(posts Posts) *templateVariable {
 	return &templateVariable{
-		SiteTitle:     v.c.SiteTitle,
-		BuiltAt:       v.c.BuiltAt,
-		Posts:         posts,
-		ArticleIndex:  -1,
-		SiteShortDesc: v.c.SiteShortDesc,
+		SiteTitle:      v.c.SiteTitle,
+		BuiltAt:        v.c.BuiltAt,
+		Posts:          posts,
+		ArticleIndex:   -1,
+		SiteShortDesc:  v.c.SiteShortDesc,
+		TwitterAccount: v.c.TwitterAccount,
 	}
 }
 
