@@ -16,6 +16,7 @@
     <meta property="og:type" content="{{.OgType}}" />
     <meta property="og:url" content="{{.URL.String}}" />
     <meta property="og:site_name" content="{{.SiteTitle}}" />
+    <meta property="og:image" content="{{.URL.Scheme}}://{{.URL.Host}}/images/kosei-pic.png" />
 
     {{$ogDesc := .SiteShortDesc}}
     {{if ge .ArticleIndex 0}}
@@ -31,7 +32,7 @@
 
 <header class="site-header">
     <a href="/" title="Home">
-        <img src="/images/kosei-pic.png" title="logo">
+        <img src="/images/kosei-pic.png" title="logo" width="73">
     </a>
     <h1><a href="/">{{.SiteTitle}}</a></h1>
     <h2>{{.SiteShortDesc}}</h2>

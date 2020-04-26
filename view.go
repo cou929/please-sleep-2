@@ -13,7 +13,7 @@ import (
 	"github.com/russross/blackfriday/v2"
 )
 
-const ogDescLen = 80
+const ogDescLen = 300
 
 // View manages views of the site
 type View struct {
@@ -175,7 +175,14 @@ func (v View) viewFunc() template.FuncMap {
 			return string(blackfriday.Run(([]byte)(md)))
 		},
 		"shorten": func(content string) string {
-			return strings.Replace(content[0:ogDescLen], "\n", " ", -1)
+			r := []rune(content)
+			l := ogDescLen
+			suf := "…"
+			if len(r) < ogDescLen {
+				l = len(r)
+				suf = ""
+			}
+			return strings.Replace(string(r[0:l]), "\n", " ", -1) + suf
 		},
 	}
 }
