@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,6 +12,8 @@ import (
 
 	"github.com/russross/blackfriday/v2"
 )
+
+const ogDescLen = 80
 
 // View manages views of the site
 type View struct {
@@ -47,6 +50,13 @@ func (v View) Build(posts Posts) error {
 			}
 			defer f.Close()
 			tv := v.templateVariable(posts)
+			tv.OgType = "website"
+			urlStr := v.c.SiteURL + t.Name()
+			pageURL, err := url.Parse(urlStr)
+			if err != nil {
+				return fmt.Errorf("failed to parse url %s. err=%w", urlStr, err)
+			}
+			tv.URL = pageURL
 			if err := root.ExecuteTemplate(f, t.Name(), tv); err != nil {
 				return fmt.Errorf("failed to execute template %s. err=%w", t.Name(), err)
 			}
@@ -64,6 +74,13 @@ func (v View) Build(posts Posts) error {
 			tv := v.templateVariable(posts)
 			tv.ArticleIndex = i
 			tv.PageTitle = p.Title
+			tv.OgType = "article"
+			urlStr := v.c.SiteURL + p.DestFileName()
+			pageURL, err := url.Parse(urlStr)
+			if err != nil {
+				return fmt.Errorf("failed to parse url %s. err=%w", urlStr, err)
+			}
+			tv.URL = pageURL
 			if err := root.ExecuteTemplate(f, t.Name(), tv); err != nil {
 				return fmt.Errorf("failed to execute template %s. err=%w", t.Name(), err)
 			}
@@ -129,6 +146,8 @@ type templateVariable struct {
 	Posts         Posts
 	ArticleIndex  int
 	SiteShortDesc string
+	OgType        string
+	URL           *url.URL
 }
 
 func (v View) templateVariable(posts Posts) *templateVariable {
@@ -154,6 +173,9 @@ func (v View) viewFunc() template.FuncMap {
 		},
 		"convert": func(md string) string {
 			return string(blackfriday.Run(([]byte)(md)))
+		},
+		"shorten": func(content string) string {
+			return strings.Replace(content[0:ogDescLen], "\n", " ", -1)
 		},
 	}
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# {{.OgType}}: http://ogp.me/ns/{{.OgType}}#">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>{{if .PageTitle}}{{.PageTitle}} - {{end}}{{.SiteTitle}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,18 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css" />
     <link rel="shortcut icon" href="/images/kosei-pic.png" />
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+
+    <meta property="og:title" content="{{.PageTitle}}" />
+    <meta property="og:type" content="{{.OgType}}" />
+    <meta property="og:url" content="{{.URL.String}}" />
+    <meta property="og:site_name" content="{{.SiteTitle}}" />
+
+    {{$ogDesc := .SiteShortDesc}}
+    {{if ge .ArticleIndex 0}}
+    {{$post := index .Posts .ArticleIndex}}
+    {{$ogDesc = shorten $post.Content}}
+    {{end}}
+    <meta property="og:description" content="{{$ogDesc}}" />
 </head>
 
 <body>
