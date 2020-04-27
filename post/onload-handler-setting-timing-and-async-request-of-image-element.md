@@ -24,5 +24,47 @@ document.body.appendChild(img);</code></pre>
 
 簡単な検証コードだが、以下の html を IE 8 などで開くて何度かリロードすると現象を再現できると思う。
 
-<script src="https://gist.github.com/cou929/8123027.js"></script>
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+// for caching
+(new Image()).src = 'http://upload.wikimedia.org/wikipedia/commons/2/23/1x1.GIF?a=1';
+</script>
+</head>
+<body>
+<div>
+  <h2>set src attribute before attaching onload listener</h2>
+  <p>is onload called: <span id="result1"></span></p>
+  <p>complete attribute: <span id="result2"></span></p>
+</div>
 
+<div>
+  <h2>set src attribute after attaching onload listener</h2>
+  <p>is onload called: <span id="result3"></span></p>
+  <p>complete attribute: <span id="result4"></span></p>
+</div>
+
+<script>
+setTimeout(function(){
+    // set src attribute before attaching onload listener
+    var img = new Image();
+    img.src = 'http://upload.wikimedia.org/wikipedia/commons/2/23/1x1.GIF?a=2';
+    img.onload = function() { document.getElementById('result1').innerHTML = 'called'; };
+    document.getElementById('result2').innerHTML = img.complete;
+}, 500);
+
+setTimeout(function(){
+    // set src attribute after attaching onload listener
+    var img = new Image();
+    img.onload = function() { document.getElementById('result3').innerHTML = 'called'; };
+    img.src = 'http://upload.wikimedia.org/wikipedia/commons/2/23/1x1.GIF?a=3';
+    document.getElementById('result4').innerHTML = img.complete;
+}, 500);
+</script>
+</body>
+</html>
+```
+
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=pleasesleep-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=4048930737&linkId=ff6b7c48c954ab6b7faa261f503919f4"></iframe>
