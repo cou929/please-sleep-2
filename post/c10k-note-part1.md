@@ -7,9 +7,7 @@ C10K とか, Web サーバ (あるいは Node.js みたいなフレームワー�
 
 これを読むのが一番近道感がある.
 
-<a href="http://www.amazon.co.jp/gp/product/4894712059/ref=as_li_tf_il?ie=UTF8&camp=247&creative=1211&creativeASIN=4894712059&linkCode=as2&tag=pleasesleep-22">
-![unix_network_programming_book fig](http://www.pej-hed.jp/washo/file/719.jpg)
-</a>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=pleasesleep-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=4894712059&linkId=f69799724df8997527ca1e57a70432a8"></iframe>
 
 <a href="http://www.amazon.co.jp/gp/product/4894712059/ref=as_li_tf_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4894712059&linkCode=as2&tag=pleasesleep-22">UNIXネットワークプログラミング〈Vol.1〉ネットワークAPI:ソケットとXTI - W.Richard Stevens</a><img src="http://www.assoc-amazon.jp/e/ir?t=pleasesleep-22&l=as2&o=9&a=4894712059" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
 
@@ -57,7 +55,7 @@ C10K とか, Web サーバ (あるいは Node.js みたいなフレームワー�
 
 この表がわかりやすい
 
-![thread comp table](http://gyazo.com/30878689fd157c71eb9d4c0b1cdbfd83.png?1328112151)
+![thread comp table](images/30878689fd157c71eb9d4c0b1cdbfd83.png)
 
 <!--
 > 		利点				欠点
@@ -96,12 +94,12 @@ pthread はカーネルレベルのスレッドらしい
 
 ### IO
 
-![IO Models fig](http://dl.dropbox.com/u/151946/images/iomodel.png)
+![IO Models fig](images/20121103215112.png)
 
 #### Blocking / Non Blocking
 
-![sync io fig](http://www.ibm.com/developerworks/linux/library/l-async/figure2.gif)
-![nonblock fig](http://www.ibm.com/developerworks/linux/library/l-async/figure3.gif)
+![sync io fig](images/figure2.gif)
+![nonblock fig](images/figure3.gif)
 
 "ブロックする" とは, あるファイルディスクリプタの準備ができるまで処理が止まること. O_NONBLOCK フラグを指定すると, 即座に処理が戻ってくる. O_NONBLOCK で対象のファイルの準備ができていないときは read は -1 を返すし, errno には 11 (APUE 曰く. Mac でやってみたら 35 が返ってきてた) がセットされる.
 
@@ -149,7 +147,7 @@ stdout へ O_NONBLOCK の指定をしなければこんなエラーは出ず, �
 
 #### IO multiplexing
 
-![multiplexing fig](http://www.ibm.com/developerworks/linux/library/l-async/figure4.gif)
+![multiplexing fig](images/figure4.gif)
 
 一つのプロセスで複数のファイルディスクリプタを扱いたい. Web サーバなどこのようなケースは多い. 例えばリクエストを受けて DB にアクセスするようなケースでは, リクエストの読み書き, DB との読み書きで 4 つのファイルディスクリプタの読み書きを行わなければならない. どれか一つの読み書きをブロックしていると, 他が全く使えなくなってしまい破綻する.
 
@@ -182,7 +180,7 @@ select と違い扱えるディスクリプタ数の制限無し.
 
 #### Sync / Async IO
 
-![async io fig](http://www.ibm.com/developerworks/linux/library/l-async/figure5.gif)
+![async io fig](images/figure5.gif)
 
 - fd の ready だけでなく, 読み書きが完了した時点でメインプロセスに通知される.
 - select との対比だと, select で待っている間のブロックすらない.
