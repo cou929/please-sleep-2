@@ -1,6 +1,6 @@
 {"title":"yapcasia 2012","date":"2012-09-30T20:31:39+09:00","tags":["memo"]}
 
-![ypacasia 2012 main hall](http://cdn-ak.f.st-hatena.com/images/fotolife/c/cou929_la/20120929/20120929141034.jpg?1349003978)
+![ypacasia 2012 main hall](images/20120929141034.jpg)
 
 [HOME \| YAPC::Asia Tokyo 2012](http://yapcasia.org/2012/)
 

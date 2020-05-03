@@ -1,6 +1,6 @@
 {"title":"Chrome Tech Talk Night #4","date":"2012-10-25T00:53:40+09:00","tags":["memo"]}
 
-![](http://cdn-ak.f.st-hatena.com/images/fotolife/c/cou929_la/20121024/20121024200614.jpg?1351093341)
+![](images/20121024200614.jpg)
 
 [Chrome Tech Talk Night #4 を開催します - Google Japan Developer Relations Blog](http://googledevjp.blogspot.jp/2012/10/chrome-tech-talk-night-4.html)
 
