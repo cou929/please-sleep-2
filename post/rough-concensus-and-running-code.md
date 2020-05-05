@@ -1,4 +1,4 @@
-{"title":"Rough Concensus and Running Code、IETF での合意形成について調べたこと","date":"2020-05-05T15:02:00+09:00","tags":["management"]}
+{"title":"Rough Consensus and Running Code、IETF での合意形成について調べたこと","date":"2020-05-05T15:02:00+09:00","tags":["management"]}
 
 [IETF](https://www.ietf.org/) には `rough consensus and running code` というモットーがあるらしい。
 
@@ -19,9 +19,9 @@
 
 このようなモチベーションのため、この記事は IETF の標準化プロセスの詳細を説明するものではないし、特定の技術標準についてでもないので、注意してください。
 
-## Rough Concensus
+## Rough Consensus
 
-まずは Rough Concensus について、[RFC 2418 \- IETF Working Group Guidelines and Procedures](https://tools.ietf.org/html/rfc2418) には次のように説明されている。
+まずは Rough Consensus について、[RFC 2418 \- IETF Working Group Guidelines and Procedures](https://tools.ietf.org/html/rfc2418) には次のように説明されている。
 
 > Working groups make decisions through a "rough consensus" process. IETF consensus does not require that all participants agree although this is, of course, preferred.
 
@@ -33,9 +33,9 @@
 
 > Consensus can be determined by a show of hands, humming, or any other means on which the WG agrees (by rough consensus, of course).
 
-- ワーキンググループは、全会一致を理想としながらも、`rough concensus` が取れた場合は議論を先にすすめることにしている
+- ワーキンググループは、全会一致を理想としながらも、`rough consensus` が取れた場合は議論を先にすすめることにしている
 - 単純な投票数ではなく、大多数が合意できていると考えられているかどうか (`genearl sense of agreement`)
-- `rough concensus` に達したかどうかは議長が判断する
+- `rough consensus` に達したかどうかは議長が判断する
 
 客観的な方法ではなく、あえて主観的に判断しているということらしい。
 
@@ -58,7 +58,7 @@
 
 一方で 100% 全会一致を目指すと、議論が進捗しづらくなる。例えば消費電力が低く高速な CPU は無いように、技術的なトレードオフはそもそも避けようがない。そうでなくても妨害的に反対する人が一人でもいると、全く進まなくなってしまうという弱さにもなる。
 
-このようなジレンマへの対応が Rough Concensus というコンセプト。たとえ反対者が反対し続けたとしても、反対の根拠になっている「どのようなケースで問題になるか」が十分に検討されていれば先に進む。
+このようなジレンマへの対応が Rough Consensus というコンセプト。たとえ反対者が反対し続けたとしても、反対の根拠になっている「どのようなケースで問題になるか」が十分に検討されていれば先に進む。
 
 反対の声ではなく、それが指摘している「問題」に集中することが大切。技術的にどのような課題があるのかを明確にし、その検討を行うこと。そのうえでアウトプットを変更することもあるし、トレードオフとして対応しないこともある。その後の同様の異論があったとしても、その課題は検討済みとして前に進むことができる。
 
@@ -93,7 +93,7 @@ IETF という歴史のある組織で、客観的・手続き的な投票では
 
 ## そのほかの工夫
 
-Rough Concensus は独自性の高いコンセプトだけど、それ以外にもいろいろなプロジェクト運営の工夫がされている。
+Rough Consensus は独自性の高いコンセプトだけど、それ以外にもいろいろなプロジェクト運営の工夫がされている。
 内容自体は一般的かもしれないが、個人的に参考になったものをピックアップした。
 
 ### プロジェクトの目的・スコープ・マイルストーンを明確化すること
