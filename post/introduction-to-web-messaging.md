@@ -1,6 +1,6 @@
 {"title":"HTML5 Web Message のイントロダクション","date":"2013-04-16T00:02:29+09:00","tags":["javascript"]}
 
-![](http://farm3.staticflickr.com/2469/3928105188_3e98ca7eb3.jpg)
+![](images/3928105188_3e98ca7eb3.jpg)
 
 [An Introduction to HTML5 web messaging - Dev.Opera](http://dev.opera.com/articles/view/window-postmessage-messagechannel/) を読んだメモ。MessageChannel は知らなかったので。
 

@@ -8,7 +8,7 @@
 
 特に意識せずコードを書くとあるタイミングでブラウザが GC をはしらせる. その際 js の実行が一時的に止まってメモリを解放する. developer tool 出見るとジグザグのグラフになる.
 
-![Zig-zag memory usage while playing a Javascript game](http://www.scirra.com/images/chromememoryusage.png)
+![Zig-zag memory usage while playing a Javascript game](images/chromememoryusage.png)
 
 ### シンプルテクニック
 

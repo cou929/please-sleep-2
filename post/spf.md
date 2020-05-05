@@ -50,9 +50,7 @@ Sender Policy Framework. メール送信者の認証方法のひとつ. 正し�
     Received-SPF: neutral (google.com: 49.212.15.82 is neither permitted nor denied by domain of test@gmail.com) client-ip=49.212.15.82;
     Received-SPF: softfail (google.com: domain of transitioning test@yahoo.co.jp does not designate 49.212.15.82 as permitted sender) client-ip=49.212.15.82;
 
-gmail の場合は spf 認証結果をあくまでメールの扱いを決める位置変数として扱っているようだ. 上記のように pass していなくても受信自体はできていて inbox に格納される. ドメインによっては以下のようにフィッシングの警告が出る.
-
-![gmail フィッシング警告](http://gyazo.com/90b55d7d62b20810f29c973b2d8449ce.png?1349187415)
+gmail の場合は spf 認証結果をあくまでメールの扱いを決める位置変数として扱っているようだ. 上記のように pass していなくても受信自体はできていて inbox に格納される. ドメインによってはフィッシングの警告が出る.
 
 ほかの `不正らしさ` の判定結果 (例えばそのドメインから日常的に大量のメールが送られてきている, など) によってはスパム判定されたり, そもそも受信拒否されるなどの挙動も見られた.
 

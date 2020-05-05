@@ -1,6 +1,6 @@
 {"title":"GA の新機能 Universal Analytics の概要","date":"2012-11-10T10:25:36+09:00","tags":["memo"]}
 
-![logo](http://gyazo.com/48a8860f4271e64b08157c183efdadd4.png?1352260105)
+![logo](images/48a8860f4271e64b08157c183efdadd4.png)
 
 [About Universal Analytics - Analytics Help](http://support.google.com/analytics/bin/answer.py?hl=en&answer=2790010)
 

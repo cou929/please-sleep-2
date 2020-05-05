@@ -1,7 +1,5 @@
 {"title":"podcast を聞きながら仕事をしていた話","date":"2013-04-04T21:55:52+09:00","tags":["note"]}
 
-![](http://a2.mzstatic.com/jp/r30/Podcasts/v4/9d/24/76/9d24766b-f2d6-f7fa-53f1-d59ea892b057/mza_8299346175038499353.170x170-75.jpg)
-
 [Tatsuhiko Miyagawa's Podcast](http://podcast.bulknews.net/)
 
 聞こう聞こうとおもって、でもめんどくさいなーと放置していた宮川さんの podcast。ふと思いたってこれを聞きながら仕事をしてると、思いのほか具合がよかった。もちろん、ちゃんと "聴く" のではなく作業しながら "聞き流す" スタイルだ。

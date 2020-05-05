@@ -1,6 +1,6 @@
 {"title":"Node.js で Twitter Streaming API のデータを Treasure Data に流しこむ","date":"2012-11-22T02:16:56+09:00","tags":["javascript, data"]}
 
-![Treasure Data Logo](http://gyazo.com/bc4423bdc3d659bf2e76da5543668ae6.png?1353518187)
+![Treasure Data Logo](images/bc4423bdc3d659bf2e76da5543668ae6.png)
 
 とても簡単で驚いた. CentOS で環境構築. node は入っているものとする.
 

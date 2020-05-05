@@ -2,7 +2,7 @@
 
 知らなかったんですが, userscript.org から chrome にユーザースクリプトをインストールできなくなっています.
 
-![userscript のインストールが chrome にブロックされている図](http://gyazo.com/fba4db62d67b55465a6352e0944914bb.png?1352034300)
+![userscript のインストールが chrome にブロックされている図](images/fba4db62d67b55465a6352e0944914bb.png)
 
 セキュリティ上の理由より, chrome 21 からは google のストア以外からのエクステンションやユーザースクリプトのインストールはできないようになっているらしいです.
 

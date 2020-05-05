@@ -64,7 +64,7 @@ mocha はテストの外枠 (テストケースをまとめたりいろんなフ
 
 test.html をブラウザで開くとうまくいった
 
-![mocha test result](http://gyazo.com/30bf8927f2d55cf9eb30a6ae011a9212.png)
+![mocha test result](images/30bf8927f2d55cf9eb30a6ae011a9212.png)
 
 スタイルがきれいだなー
 
