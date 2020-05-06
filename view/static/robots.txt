@@ -1,0 +1,3 @@
+Sitemap: https://please-sleep.cou929.nu/sitemap.xml
+User-agent:*
+Disallow:
