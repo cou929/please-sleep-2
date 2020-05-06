@@ -51,16 +51,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/shell.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/smalltalk.min.js"></script>
 
-<script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-848190-6']);
-    _gaq.push(['_trackPageview']);
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-848190-6"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-848190-6');
+</script>
 
-    (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('a').forEach(function (el) {
+            if (el.getAttribute('href').indexOf('amazon.co.jp') != -1 && el.getAttribute('href').indexOf('pleasesleep-22') != -1) {
+                el.addEventListener('click', function () {
+                    gtag('event', document.title, {'event_category': 'af', 'event_label': 'amazon'})
+                })
+            }
+        })
+    });
 </script>
 
 </body>
