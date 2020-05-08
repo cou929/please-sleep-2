@@ -10,6 +10,8 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/cou929/please-sleep-2/internal/condition"
+	"github.com/cou929/please-sleep-2/internal/post"
 	"github.com/russross/blackfriday/v2"
 )
 
@@ -17,18 +19,18 @@ const ogDescLen = 300
 
 // View manages views of the site
 type View struct {
-	c *Condition
+	c *condition.Condition
 }
 
 // NewView initializes View
-func NewView(c *Condition) *View {
+func NewView(c *condition.Condition) *View {
 	return &View{
 		c: c,
 	}
 }
 
 // Build builds and writes entire contents to distribute
-func (v View) Build(posts Posts) error {
+func (v View) Build(posts post.Posts) error {
 	root, err := v.prepareTemplates(v.c.ViewPath, v.c.ViewSuffix, v.viewFunc())
 	if err != nil {
 		return fmt.Errorf("failed to prepare templates. err=%w", err)
@@ -143,7 +145,7 @@ type templateVariable struct {
 	SiteTitle      string
 	PageTitle      string
 	BuiltAt        time.Time
-	Posts          Posts
+	Posts          post.Posts
 	ArticleIndex   int
 	SiteShortDesc  string
 	OgType         string
@@ -151,7 +153,7 @@ type templateVariable struct {
 	TwitterAccount string
 }
 
-func (v View) templateVariable(posts Posts) *templateVariable {
+func (v View) templateVariable(posts post.Posts) *templateVariable {
 	return &templateVariable{
 		SiteTitle:      v.c.SiteTitle,
 		BuiltAt:        v.c.BuiltAt,
@@ -170,7 +172,7 @@ func (v View) viewFunc() template.FuncMap {
 		"dec": func(i int) int {
 			return i - 1
 		},
-		"lastIndex": func(p Posts) int {
+		"lastIndex": func(p post.Posts) int {
 			return len(p) - 1
 		},
 		"convert": func(md string) string {

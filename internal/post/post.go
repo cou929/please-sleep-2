@@ -1,4 +1,4 @@
-package main
+package post
 
 import (
 	"bufio"
@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/cou929/please-sleep-2/internal/condition"
 )
 
 type parseStatus int
@@ -58,7 +60,7 @@ type Post struct {
 	Filename string
 	Raw      []byte
 	Content  string
-	C        *Condition
+	C        *condition.Condition
 }
 
 type postHeader struct {
@@ -76,7 +78,7 @@ type postContent struct {
 func NewPost(
 	filename string,
 	raw []byte,
-	c *Condition,
+	c *condition.Condition,
 ) (*Post, error) {
 	p := &Post{
 		Filename: filename,

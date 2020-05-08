@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 
+	"github.com/cou929/please-sleep-2/internal/condition"
+	"github.com/cou929/please-sleep-2/internal/post"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
@@ -77,12 +79,12 @@ func TestPostRepository_isTarget(t *testing.T) {
 func TestPostRepository_load(t *testing.T) {
 	type fields struct {
 		reader reader
-		c      *Condition
+		c      *condition.Condition
 	}
 	tests := []struct {
 		name    string
 		fields  fields
-		want    Posts
+		want    post.Posts
 		wantErr bool
 	}{
 		{
@@ -110,15 +112,15 @@ file001 content`),
 file002 content`),
 					},
 				},
-				c: &Condition{PostPath: ""},
+				c: &condition.Condition{PostPath: ""},
 			},
-			want: Posts{
-				&Post{
+			want: post.Posts{
+				&post.Post{
 					Filename: "file001.md",
 					Raw: ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
 file001 content`),
 				},
-				&Post{
+				&post.Post{
 					Filename: "file002.md",
 					Raw: ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00","tags":["golang"]}
 file002 content`),
@@ -138,7 +140,7 @@ file002 content`),
 				t.Errorf("PostRepository.load() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			opt := cmpopts.IgnoreFields(Post{}, "Title", "Issued", "Content", "C")
+			opt := cmpopts.IgnoreFields(post.Post{}, "Title", "Issued", "Content", "C")
 			if diff := cmp.Diff(got, tt.want, opt); diff != "" {
 				t.Errorf("PostRepository.load() diff (-got +want)\n%s", diff)
 			}
@@ -148,21 +150,21 @@ file002 content`),
 
 func TestPostRepository_List(t *testing.T) {
 	type fields struct {
-		posts  Posts
+		posts  post.Posts
 		reader reader
-		c      *Condition
+		c      *condition.Condition
 	}
 	tests := []struct {
 		name    string
 		fields  fields
-		want    Posts
+		want    post.Posts
 		wantErr bool
 	}{
 		{
 			name: "cache loaded posts",
 			fields: fields{
-				posts: Posts{
-					&Post{Filename: "loaded.md"},
+				posts: post.Posts{
+					&post.Post{Filename: "loaded.md"},
 				},
 				reader: &readerMock{
 					filesInDir: []fileInfo{
@@ -175,17 +177,17 @@ func TestPostRepository_List(t *testing.T) {
 						"file001.md": ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
 file001 content`)},
 				},
-				c: &Condition{PostPath: ""},
+				c: &condition.Condition{PostPath: ""},
 			},
-			want: Posts{
-				&Post{Filename: "loaded.md"},
+			want: post.Posts{
+				&post.Post{Filename: "loaded.md"},
 			},
 			wantErr: false,
 		},
 		{
 			name: "load posts if no cache",
 			fields: fields{
-				posts: (Posts)(nil),
+				posts: (post.Posts)(nil),
 				reader: &readerMock{
 					filesInDir: []fileInfo{
 						&fileInfoMock{
@@ -197,17 +199,17 @@ file001 content`)},
 						"file001.md": ([]byte)(`{"title":"test post","date":"2014-09-21T12:58:19+09:00"}
 file001 content`)},
 				},
-				c: &Condition{PostPath: ""},
+				c: &condition.Condition{PostPath: ""},
 			},
-			want: Posts{
-				&Post{Filename: "file001.md"},
+			want: post.Posts{
+				&post.Post{Filename: "file001.md"},
 			},
 			wantErr: false,
 		},
 		{
 			name: "posts are sorted",
 			fields: fields{
-				posts: (Posts)(nil),
+				posts: (post.Posts)(nil),
 				reader: &readerMock{
 					filesInDir: []fileInfo{
 						&fileInfoMock{
@@ -226,11 +228,11 @@ file001 content`),
 file001 content`),
 					},
 				},
-				c: &Condition{PostPath: ""},
+				c: &condition.Condition{PostPath: ""},
 			},
-			want: Posts{
-				&Post{Filename: "file002.md"},
-				&Post{Filename: "file001.md"},
+			want: post.Posts{
+				&post.Post{Filename: "file002.md"},
+				&post.Post{Filename: "file001.md"},
 			},
 			wantErr: false,
 		},
@@ -247,7 +249,7 @@ file001 content`),
 				t.Errorf("PostRepository.List() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			opt := cmpopts.IgnoreFields(Post{}, "Title", "Issued", "Content", "Raw", "C")
+			opt := cmpopts.IgnoreFields(post.Post{}, "Title", "Issued", "Content", "Raw", "C")
 			if diff := cmp.Diff(got, tt.want, opt); diff != "" {
 				t.Errorf("PostRepository.List() diff (-got +want)\n%s", diff)
 			}

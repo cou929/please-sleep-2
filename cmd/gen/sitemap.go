@@ -5,23 +5,25 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
+	"github.com/cou929/please-sleep-2/internal/condition"
+	"github.com/cou929/please-sleep-2/internal/post"
 	"github.com/ikeikeikeike/go-sitemap-generator/v2/stm"
 )
 
 // Sitemap generates sitemap xml
 type Sitemap struct {
-	c *Condition
+	c *condition.Condition
 }
 
 // NewSitemap initializes Sitemap
-func NewSitemap(c *Condition) *Sitemap {
+func NewSitemap(c *condition.Condition) *Sitemap {
 	return &Sitemap{
 		c: c,
 	}
 }
 
 // Build generates sitemap xml
-func (s Sitemap) Build(posts Posts) error {
+func (s Sitemap) Build(posts post.Posts) error {
 	sm := stm.NewSitemap(1)
 	sm.Create()
 	sm.SetDefaultHost(s.c.SiteURL)

@@ -5,14 +5,17 @@ import (
 	"io/ioutil"
 	"path/filepath"
 	"sort"
+
+	"github.com/cou929/please-sleep-2/internal/condition"
+	"github.com/cou929/please-sleep-2/internal/post"
 )
 
 const postSuffix = ".md"
 
 // PostRepository loads and parses blog posts
 type PostRepository struct {
-	c      *Condition
-	posts  Posts
+	c      *condition.Condition
+	posts  post.Posts
 	reader reader
 }
 
@@ -47,7 +50,7 @@ func (i ioUtil) ReadFile(filename string) ([]byte, error) {
 }
 
 // NewPostRepository initializes PostRepository
-func NewPostRepository(c *Condition) *PostRepository {
+func NewPostRepository(c *condition.Condition) *PostRepository {
 	return &PostRepository{
 		c:      c,
 		reader: ioUtil{},
@@ -55,7 +58,7 @@ func NewPostRepository(c *Condition) *PostRepository {
 }
 
 // List retrieves all posts
-func (r *PostRepository) List() (Posts, error) {
+func (r *PostRepository) List() (post.Posts, error) {
 	if len(r.posts) > 0 {
 		return r.posts, nil
 	}
@@ -70,13 +73,13 @@ func (r *PostRepository) List() (Posts, error) {
 	return r.posts, nil
 }
 
-func (r *PostRepository) load() (Posts, error) {
+func (r *PostRepository) load() (post.Posts, error) {
 	files, err := r.reader.ReadDir(r.c.PostPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read dir. path=%s, err=%w", r.c.PostPath, err)
 	}
 
-	res := make(Posts, 0, len(files))
+	res := make(post.Posts, 0, len(files))
 
 	for _, file := range files {
 		if !r.isTarget(file) {
@@ -87,7 +90,7 @@ func (r *PostRepository) load() (Posts, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to read file. file=%s, err=%w", f, err)
 		}
-		post, err := NewPost(file.Name(), content, r.c)
+		post, err := post.NewPost(file.Name(), content, r.c)
 		if err != nil {
 			return nil, fmt.Errorf("failed to NewPost. filename=%s, err=%w", file.Name(), err)
 		}

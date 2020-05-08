@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/cou929/please-sleep-2/internal/condition"
+	"github.com/cou929/please-sleep-2/internal/post"
 	"github.com/gorilla/feeds"
 	"github.com/russross/blackfriday/v2"
 )
@@ -14,18 +16,18 @@ const feedItemNum = 10
 
 // RSS generate rss feed xml
 type RSS struct {
-	c *Condition
+	c *condition.Condition
 }
 
 // NewRSS initializes RSS
-func NewRSS(c *Condition) *RSS {
+func NewRSS(c *condition.Condition) *RSS {
 	return &RSS{
 		c: c,
 	}
 }
 
 // Build generates rss feed xml
-func (r RSS) Build(posts Posts) error {
+func (r RSS) Build(posts post.Posts) error {
 	feed := &feeds.Feed{
 		Title:       r.c.SiteTitle,
 		Link:        &feeds.Link{Href: r.c.SiteURL},
