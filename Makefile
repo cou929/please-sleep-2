@@ -1,22 +1,26 @@
-SRCS := $(shell find . -type f -name '*.go')
+GEN_SRCS := $(shell find cmd/gen/ -type f -name '*.go')
 POSTS := $(shell find ./post -type f)
 VIEWS := $(shell find ./view -type f)
 
 all: test dist
 
-dist: $(POSTS) $(SRCS) $(VIEWS)
+dist: $(POSTS) $(GEN_SRCS) $(VIEWS)
 	make clean
 	make run
 	make asset
 
+gen: $(GEN_SRCS)
+	go build -o gen ./cmd/gen
+
 .PHONY: clean
 clean:
 	rm -rf dist
+	rm -f gen
 
 .PHONY: run
-run:
+run: gen
 	mkdir -p dist
-	go run .
+	./gen
 
 .PHONY: asset
 asset:
