@@ -2,3 +2,5 @@ dist
 .DS_Store
 gen
 !cmd/gen
+hclean
+!cmd/hclean
