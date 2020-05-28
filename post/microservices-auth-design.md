@@ -4,11 +4,9 @@
 
 - あくまで “一般論” なので、実際には個々のドメインにあわせてアレンジが必要
 	- 往々にしてこの “アレンジ” に価値が宿るものだが、まずはセオリーを知っておきたいというモチベーションで調査した
-- マイクロサービスと言っても、サービスが千個オーダー〜十個以下とバリエーションがある
-	- 規模に応じてどこまで複雑な設計にするかがかわりそう
 - Web 上の記事を読んでまとめただけなので、手を動かしての確認はしておらず、理解が甘い部分はご容赦ください
-
-なお具体的な通信方式やサービフ間通信のセキュリティと言った具体論までは踏み込めていない。このへんはサービスメッシュやゼロトラストネットワークといったトピックが登場すると思われる。これらは次回以降の Todo としています。
+- 具体的な通信方式やサービス間通信のセキュリティといった具体論までは踏み込めていない。このへんはサービスメッシュやゼロトラストネットワークといったトピックが登場すると思われる
+    - これらは次回以降の Todo としています
 
 ## その前に、認証と認可
 
@@ -54,55 +52,86 @@
 
 ## 認証の設計パターン
 
-認証の設計について、ここでは “セッションを分散されたシステム間でどう共有するか” という問題に注目する。
+認証の設計について、ここでは “セッション (ログイン状態) を分散されたシステム間でどう共有するか” という問題に注目する。
 
-記事によって少しずつ違う名前だったりするが、概ね下記の4パターンに分類できる。いくつかの記事では、下記 3 または 4 の Client Side Token を使うパターンがベターと紹介されていた。
+いろいろな記事で類似のパターンが言及されていたが、それらの元ネタは以下の論文のようだ。
 
-### SSO パターン
+[Authentication and Authorization of End User in Microservice Architecture \- IOPscience](https://iopscience.iop.org/article/10.1088/1742-6596/910/1/012060)
 
-![](images/microservices-auth-design-03.png)
+前提として、従来的なセッションストア方式と、トークン方式の認証についておさらいする。
 
-- サービス全体の認証を行うマイクロサービスを作る
-    - 認証に成功すると Token を発行
-    - サービスはクライアントから Token を受け取り、認証サービスに対して検証リクエストをなげ、ユーザー情報を取得する
-- シーケンス図にすると処理はシンプルだが、認証サービスへの負荷集中 / SPOF となるデメリットがある
-    - サービスが増えるほど認証サービスの負荷が増加
-    - セッションストアをスケールさせるのは大変そう
+- セッションストア方式
+    - ユーザー情報 (セッション情報) はサーバ側でストレージに保存
+    - セッション ID をクライアント側のクッキーなどで保持
+    - アプリケーションサーバを水平にスケールさせるには、セッションストアを共有する、スティッキーセッションを使うと言った方法が必要になる
+- トークン方式
+    - 認証後にトークンが発行され、以降のクライアントとリソースサーバのやりとりはそのトークンが使われる
+    - トークンにはユーザー情報そのものが埋め込まれている
+        - セッションストア方式でセッションストレージに入っている情報がトークンにそのまま入っている
+    - 従来的なセッションストア方式に比べある程度複雑化するが、以下のメリットがある
+        - クライアントがモバイルでも扱いやすい
+        - サーバ側を水平にスケールさせやすい
+    - ![](images/microservices-auth-design-07.png)
+
+その上で、マイクロサービスでの設計パターンを4つ紹介している。記事によって少しずつ違う名前だったりするが、概ね内容は同じだった。
 
 ### 分散セッションパターン
 
 ![](images/microservices-auth-design-04.png)
 
-- SSO パターンについて、セッションストアをサービス全体からアクセスできる分散ストレージにしたもの
-- 各サービスから直接セッション情報の読み書きをするので、認証サービスへの負荷を分散できる
-- 分散ストレージの可用性 / スケーリングに注意が必要
-- 分散ストレージの導入は、マイクロサービスの原則 (各システムが単一責任でセルフサービスであること) の観点では微妙かもしれない
+従来的なセッションストア方式の考え方を、そのままマイクロサービスに展開したもの。
 
-### Client Side Token パターン
+- 各マイクロサービスからセッションストレージにアクセスできるようにする
+- 分散ストレージの可用性 / スケーリングに注意が必要
+- マイクロサービスの原則 (各システムが単一責任でセルフサービスであること) の観点では微妙かもしれない
+- 一方である意味シンプルで従来的なシステムから自然に拡張できるメリットがあると思う
+    - ストレージの運用知見がある場合や、段階的な以降のためのステップとしての場合など、活用できる場面はありそう
+
+このパターンはセッションストア方式だが、以降の 3 パターンはいずれもトークン方式になる。
+
+### SSO パターン
+
+![](images/microservices-auth-design-03.png)
+
+前提として、従来的なセッション ID 文字列のような、利用者がその内容を読まないトークンのことを [Opaque トークン](https://stackoverflow.com/questions/59158410/what-is-an-opaque-token) と呼ぶらしい。反対は JWT のようなそれ自体に情報を埋め込めるトークン。以降は、情報を含むトークンは "JWT"、そうでないトークンは "Opaque トークン" と表記するようにした。
+
+SSO パターンは認証サービスが Opaque トークンを使うパターン。
+
+- サービス全体の認証を行うマイクロサービスを作る
+    - 認証に成功すると Opaque トークンを発行
+    - サービスはクライアントから Opaque トークンを受け取り、認証サービスに対して検証リクエストをなげ、ユーザー情報を取得する
+        - Opaque トークンを使うため認証サービスへの検証リクエストが発生してしまう
+- 図では処理はシンプルだが、認証サービスへの負荷集中 / SPOF となるデメリットがある
+    - サービスが増えるほど認証サービスの負荷が増加
+    - セッションストアをスケールさせるのは大変そう
+
+## JWT 利用パターン
 
 ![](images/microservices-auth-design-05.png)
 
-- クライアントからのリクエストにユーザー情報を埋め込む
-- 従来方式 (サーバ・クライント間でセッション ID をやりとりし、ユーザー情報はサーバ側のデータストアに保持) と比べ、トークンにすべての情報が含まれるため、各サービスが認証サービスに問い合わせなくてもトークンの検証・ユーザー情報取得ができる
+SSO パターンと比べ、JWT を使うことでスケール・SPOF の問題を緩和する方式。
+
+- 認証後に発行するトークンはユーザー情報が埋め込まれた JWT とする
+- トークンの検証・ユーザー情報取得が各サービス内で完結する
     - 認証サービスの負荷が分散でき、サービス間の結合度も下げられる
-- 技術としては JWT、OpenID Connect が用いられることが多いと思われる
 - 前 2 案の課題をよく克服しているが、ログアウトの実装が難しいことがデメリット
     - ログアウトにはクライアントサイドのデータ削除が必要だが、それを素直に実現するのが難しそう
         - 定期的に認証サービスに問い合わせる...
         - 各マイクロサービスに revoke したトークンを push して知らせる...
         - トークンの TTL を短くする...
 
-### API GW + Client Side Token パターン
+### JWT 利用 + API Gateway パターン
 
 ![](images/microservices-auth-design-06.png)
 
-- Client Side Token パターンに加え、クライアントからのリクエストは必ず API Gateway を通るようにする
-- API GW はユーザー情報を保持するデータストアを持ち、トークンの変換を行う
-    - クライアントと API GW はユーザー情報のないトークンをやり取りする
-    - API GW はクライアントからのトークンを検証し、ユーザー情報を保持した別トークンを内部用に渡す
-    - 内部のサービスはユーザー情報が含まれたトークンを使用する
-        - このトークンだけで検証、ユーザー情報取得が可能なのは案 3 と同じ
-- ログアウトの問題がすっきり解消できる反面、データストアが必要になり API GW をスケールさせる運用が必要になることがデメリット
+JWT 利用パターンに加え、API Gateway でのトークン変換を行う方式。
+
+- API Gateway で JWT と Opaque トークンを変換する
+    - クライアントと API GW 間は Opaque トークンを利用する
+    - API GW より後ろのマイクロサービス内の通信には JWT を使う
+- API GW で一元的にトークンを管理できるので、ログアウトの問題がすっきりと解消できる
+- 一方で API GW が新たな SPOF になりうるのと、全体として複雑な仕組みになるのがデメリット
+    - API GW は Opaque トークンと JWT の変換を行うため、ストレージも必要になり、その運用も考えないといけない
 
 ## 認可の設計パターン
 
@@ -144,13 +173,13 @@
 
 ![](https://upload.wikimedia.org/wikipedia/en/1/19/Role-based_access_control.jpg)
 
-_([Role\-based access control \- Wikipedia](https://en.wikipedia.org/wiki/Role-based_access_control) より引用)_
+*([Role\-based access control \- Wikipedia](https://en.wikipedia.org/wiki/Role-based_access_control) より引用)*
 
 マイクロサービスの文脈では、RBAC サービスを設置するパターンが紹介されていた。API GW がトークンを検証する際に、RBAC サービスにも問い合わせ、そのアカウントのロールとパーミッションを取得、それを内部用トークンに埋め込む。
 
 ![](https://i0.wp.com/blog.knoldus.com/wp-content/uploads/2019/03/Authentication-an-Autherization-Design-1.png?w=810&ssl=1)
 
-_([Authentication and Authorization in Microservices \- DZone Microservices](https://dzone.com/articles/authentication-and-authorization-in-microservices) より引用)_
+*([Authentication and Authorization in Microservices \- DZone Microservices](https://dzone.com/articles/authentication-and-authorization-in-microservices) より引用)*
 
 この部分をどう設計するかはかなりのバリエーションがありそうだ。前述のように、一元管理と分散管理のバランスが難しい。
 
@@ -162,6 +191,7 @@ _([Authentication and Authorization in Microservices \- DZone Microservices](htt
 
 ## 参考
 
+- [Authentication and Authorization of End User in Microservice Architecture \- IOPscience](https://iopscience.iop.org/article/10.1088/1742-6596/910/1/012060)
 - [muCon 2016: Authentication in Microservice Systems By David Borsos](https://www.slideshare.net/opencredo/authentication-in-microservice-systems-david-borsos)
     - [マイクロサービスシステムにおける認証ストラテジ](https://www.infoq.com/jp/news/2017/01/microservices-authentication/)
 - [Microservices Authentication and Authorization Solutions](https://medium.com/tech-tajawal/microservice-authentication-and-authorization-solutions-e0e5e74b248a)
@@ -172,5 +202,6 @@ _([Authentication and Authorization in Microservices \- DZone Microservices](htt
 - [マイクロサービスにおける内部通信の認証について \- Speaker Deck](https://speakerdeck.com/pospome/maikurosabisuniokerunei-bu-tong-xin-falseren-zheng-nituite)
 - [マイクロサービス時代の認証と認可 \- AWS Dev Day Tokyo 2018 \#AWSDevDay](https://www.slideshare.net/daisuke_m/ss-121478137)
 - [よくわかる認証と認可 \| Developers\.IO](https://dev.classmethod.jp/articles/authentication-and-authorization/)
+- [oauth \- What is an opaque token? \- Stack Overflow](https://stackoverflow.com/questions/59158410/what-is-an-opaque-token)
 
 <div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873118158/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://images-na.ssl-images-amazon.com/images/I/51n-OwJUG8L._SX350_BO1,204,203,200_.jpg" alt="プロダクションレディマイクロサービス ―運用に強い本番対応システムの実装と標準化" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873118158/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">プロダクションレディマイクロサービス ―運用に強い本番対応システムの実装と標準化</a></div><div class="amazlet-detail">Susan J. Fowler (著), 佐藤 直生 (監修), 長尾 高弘  (翻訳)<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873118158/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
