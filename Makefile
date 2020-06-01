@@ -38,3 +38,12 @@ watch:
 		make dist --silent; \
 		sleep 1; \
 	done
+
+.PHONY: local-server
+local-server:
+	go run ./tools/localsvr/ ./dist/
+
+.PHONY: dev
+dev:
+	make watch &
+	make local-server
