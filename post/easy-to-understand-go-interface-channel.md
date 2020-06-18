@@ -1,6 +1,6 @@
 {"title":"Go の interface と channel の良いサンプル","date":"2020-06-18T22:32:00+09:00","tags":["go"]}
 
-[revel/cmd](https://github.com/revel/cmd) の [`harness.AppCmd.Start` という関数](https://github.com/revel/cmd/blob/531aa1e209463d09e3c1d6602d7ad4f2218e742c/harness/app.go#L63-L91) が Go らしさのある、Go の機能を説明するのに良いサンプルだなと思ったのでメモ。interface (io.Writer) と並列処理 (channel, select) を理解するのに良さそうだった。
+[revel/cmd](https://github.com/revel/cmd) の [`harness.AppCmd.Start` という関数](https://github.com/revel/cmd/blob/531aa1e209463d09e3c1d6602d7ad4f2218e742c/harness/app.go#L63-L91) が Go らしさのある、Go の機能を説明するのに良いサンプルだなと思ったのでメモ。interface (io.Writer) と並行処理 (channel, select) を理解するのに良さそうだった。
 
 ## revel/cmd とは
 
@@ -22,7 +22,7 @@
 - サーバアプリケーションが正常に起動すると `Revel engine is listening on..` というメッセージが標準出力に書き込まれる
 - 親プロセス (revel/cmd) は子プロセス (サーバアプリケーション) の標準出力を監視し、上記のメッセージが書き込まると正常に起動したとみなしている
 
-この要件を interface (io.Writer) と並列処理 (channel, select) ですっきりと実現していた。
+この要件を interface (io.Writer) と並行処理のための機能 (channel, select) ですっきりと実現していた。
 
 - io.Writer を実装した独自の Writer を子プロセスの Stdout に設定する
 - 独自 Writer はメッセージを検知すると channel で親プロセスにメッセージを送る
@@ -77,7 +77,7 @@ func (cmd AppCmd) Start(c *model.CommandConfig) error {
 
 `cmd.Stdout` に listeningWriter を代入するだけで良いのが、らしいポイントだなと思った。
 
-## 並列処理
+## 並行処理
 
 [os/exec.Cmd.Start](https://pkg.go.dev/os/exec?tab=doc#Cmd.Start) で子プロセスを起動した後に、select で次のイベントをブロックして待っている。
 
@@ -118,7 +118,7 @@ func (cmd AppCmd) Start(c *model.CommandConfig) error {
 	}
 ```
 
-いろいろな並列処理の結果をシーケンシャルに受け取るのを、channel と select を使ってシンプルに書けていて、Go らしさがわかりやすい気がした。ちなみに goroutine 間のコミュニケーションを channel で行うのが普通だが、プロセス間の通信でも同じようにやっているのが、個人的にちょっと面白かった。
+いろいろな並行処理の結果をシーケンシャルに受け取るのを、channel と select を使ってシンプルに書けていて、Go らしさがわかりやすい気がした。ちなみに goroutine 間のコミュニケーションを channel で行うのが普通だが、プロセス間の通信でも同じようにやっているのが、個人的にちょっと面白かった。
 
 ## 全体の骨格
 
@@ -170,3 +170,5 @@ func main() {
 ## さいごに
 
 interface、なかでも io.Writer/Reader や groutine 間の channel でのやりとり (今回はプロセスだったが) は Go の良さがわかりやすい機能だと思う。今回のサンプルこれらの恩恵を理解しやすい気がしたので簡単にメモした。
+
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873118468/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://images-na.ssl-images-amazon.com/images/I/51pUKQajnaL._SX389_BO1,204,203,200_.jpg" alt="Go言語による並行処理" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873118468/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Go言語による並行処理</a></div><div class="amazlet-detail">Katherine Cox-Buday (著), 山口 能迪  (翻訳)<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873118468/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
