@@ -554,7 +554,7 @@ local/remote:   127.0.0.1:58630 <-> :0 (LISTEN)
 local/remote:   *:2000 <-> :0 (LISTEN)
 ```
 
-`gops stack <PID>` で goroutine ごとのスタックを参照できる。`goroutine 19` が gops のエージェント、`goroutine 1` が accept 待ちをしており、状態が `IO wait` 担っていることがわかる。
+`gops stack <PID>` で goroutine ごとのスタックを参照できる。`goroutine 19` が gops のエージェント、`goroutine 1` が accept 待ちをしており、状態が `IO wait` になっていることがわかる。
 
 ```
 2020-06-22 12:52 go master$ gops stack 47670

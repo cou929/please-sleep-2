@@ -411,6 +411,10 @@ article .read-more:after {
   vertical-align: middle;
   font-size: .9em;
 }
+article pre {
+  overflow: auto;
+  white-space: pre;
+}
 nav {
   margin: 0 auto 3.631em;
   width: 100%;
