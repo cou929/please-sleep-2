@@ -384,7 +384,7 @@ blockquote p {
 .articles {
   margin: 0 auto;
   width: 100%;
-  max-width: 740px;
+  max-width: 800px;
 }
 article {
   margin: 0 0 3.631em;
@@ -413,12 +413,12 @@ article .read-more:after {
 }
 article pre {
   overflow: auto;
-  white-space: pre;
+  white-space: pre;/
 }
 nav {
   margin: 0 auto 3.631em;
   width: 100%;
-  max-width: 740px;
+  max-width: 800px;
 }
 nav:after {
   content: "\0020";
@@ -554,7 +554,7 @@ footer .icons {
 .single-article {
   margin: 6.854em auto 6.854em;
   width: 100%;
-  max-width: 740px;
+  max-width: 800px;
 }
 .single-article header h1 {
   margin: 0 0 1.2em;
