@@ -118,7 +118,22 @@ func (cmd AppCmd) Start(c *model.CommandConfig) error {
 	}
 ```
 
-いろいろな並行処理の結果をシーケンシャルに受け取るのを、channel と select を使ってシンプルに書けていて、Go らしさがわかりやすい気がした。ちなみに goroutine 間のコミュニケーションを channel で行うのが普通だが、プロセス間の通信でも同じようにやっているのが、個人的にちょっと面白かった。
+いろいろな並行処理の結果をシーケンシャルに受け取るのを、channel と select を使ってシンプルに書けていて、Go らしさがわかりやすい気がした。
+
+~~ちなみに goroutine 間のコミュニケーションを channel で行うのが普通だが、プロセス間の通信でも同じようにやっているのが、個人的にちょっと面白かった。~~
+
+なにか勘違いしてこう↑書いていたが、実際にプロセス間通信を channel で行っているわけではもちろんない。channel はあくまでも goroutine 間のコミュニケーションに使われる。
+
+`os/exec.Cmd` は標準入出力に独自の io.Writer を指定できる。子プロセスの出力を指定された io.Writer へコピーする作業が、親プロセスが起動した goroutine 上で行われる。なのでこの例の channel のやりとりはあくまでも親プロセスの goroutine 間で行われている。
+
+補足として、具体的には以下の部分。
+
+- [writerDescriptor()](https://github.com/golang/go/blob/bd486c39bad4c9f90190ae58de8a592bb9a2aae9/src/os/exec/exec.go#L289) が [子プロセスの起動処理](https://github.com/golang/go/blob/bd486c39bad4c9f90190ae58de8a592bb9a2aae9/src/os/exec/exec.go#L422-L427) に渡す stdout/stderr を準備するメソッド
+- まず [pipe を作る](https://github.com/golang/go/blob/bd486c39bad4c9f90190ae58de8a592bb9a2aae9/src/os/exec/exec.go#L303)
+- [pipe から read したものをカスタムの wirter へコピーする](https://github.com/golang/go/blob/bd486c39bad4c9f90190ae58de8a592bb9a2aae9/src/os/exec/exec.go#L311)
+    - この処理は [あとで](https://github.com/golang/go/blob/bd486c39bad4c9f90190ae58de8a592bb9a2aae9/src/os/exec/exec.go#L436-L444) goroutine として起動される
+- pipe の [writer 側](https://github.com/golang/go/blob/bd486c39bad4c9f90190ae58de8a592bb9a2aae9/src/os/exec/exec.go#L315) を [StartProcess に渡す](https://github.com/golang/go/blob/bd486c39bad4c9f90190ae58de8a592bb9a2aae9/src/os/exec/exec.go#L424)
+
 
 ## 全体の骨格
 
