@@ -1,0 +1,33 @@
+{"title":"NO HARD WORK!: 無駄ゼロで結果を出すぼくらの働き方 を読んだ","date":"2021-01-01T23:08:58+09:00","tags":["book"]}
+
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4152098333/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://images-na.ssl-images-amazon.com/images/I/51qWVKgBWML._SX344_BO1,204,203,200_.jpg" alt="NO HARD WORK!: 無駄ゼロで結果を出すぼくらの働き方" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4152098333/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">NO HARD WORK!: 無駄ゼロで結果を出すぼくらの働き方</a></div><div class="amazlet-detail">ジェイソン フリード  (著), デイヴィッド ハイネマイヤー ハンソン (著), Jason Fried (著), & 2 その他<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4152098333/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
+
+実をいうと間違えてクリックして買ってしまった本だったんだけど、意外と良かった。(ちょっと失礼な言い方になってしまったけれど、ベースキャンプの本なので大丈夫だろうと思いあえて返品はしなかったという経緯もあり、ご容赦ください)
+
+ベースキャンプではこういうポリシーで会社組織を運営しているよ、というのを説明している本。その "ポリシー" の核となるのが「会社として無理な拡大路線をとらない (そのためのめちゃめちゃなハードワークもしない) 」というもので、`Calm company` という名前もつけている。なんとなく <a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798117501/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">エリック・シンクの水色の本にでてくる IVS</a> とか、<a href="http://www.amazon.co.jp/exec/obidos/ASIN/4822281116/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">デマルコのゆとりの法則</a> なんかを連想する内容。
+
+Calm company を実現するためにとっている考え方や行っている施策は、共感できるものも多かった。
+
+- マネージャは本来、共感力を部下の倍持っていないといけない (なので働きすぎや寝不足はよくない)
+- 「見積もり」ではなく「予算」の感覚で計画する。ここでは予算 = 期間。締め切り固定でスコープを動かすというのはよくある話だが、「予算」という見方、つまりその期間に入れるとしたらもっとも費用対効果が高いのはどれという感覚、を取り込むのが理解しやすかった
+    - この話を連想した: [ソフトウェアを書くときは見積もりよりも予算が大事｜藤村｜note](https://note.com/fujimuradaisuke/n/n1ec91e02453f)
+- なにかのアイデアを会議で議論してその場でフィードバックを得るのは、アウトプットの質が高まらないという批判。しっかり練った提案をしっかり時間をとってレビューしてもらったほうが、質の高い成果物ができあがるというもの。文章でアイデアをまとめ、文章でフィードバックをもらう。
+    - これは常々思っていてとても共感した。少なくともソフトウェアの開発はそのようにしているし、自分は頭の回転が遅い自覚があるのでよりそう思う
+    - 一方でこれが成り立つにはチームメンバー全体に余裕がないとできない気がするので、忙しい現場にこの施策だけを持ち込んでも上手く行かないかもしれない
+- ひとつひとつの「行動」の積み重ねが組織の文化になるということ
+- B2B で大手顧客対応をするかどうか。する場合は大きな覚悟がいる。両方やるのは相当難しい。単一の答えはないが、すくなくとも中途半端は良くない
+    - `最悪の顧客は、どうしても失えない顧客だ。不満の気配がちらついただけで、あなたの気力を打ち砕き、神経を擦り切れさせる。まるで巨大な白鯨だ。そういう顧客がいると夜も眠れなくなる` (「失う勇気」より引用)
+
+このような組織で従業員として働けると楽しそうだなと思う一方、組織運営上すべてのケースに当てはまる最適解は無いという経験則もあるので、このような組織が成り立つための前提はなんだろうと思ってしまった。ベースキャンプがこういう組織運営をできているのは、それこそこの会社に「余裕」(つまり十分な利益) があるからだと思われるが、外部からの調達なく、エンジニアに十分な給与水準や豊富な福利厚生を提供できるほどの利益をあげられるのは、仮にソフトウェア産業に絞ったとしても、すべての事業領域やビジネスモデルに当てはまるんだろうか。とにかく、単にこの本に書いてあることを形だけ取り入れるのは違うだろうなと思った。
+
+以下はその他に気になった部分のメモ。
+
+- 基本的には働きすぎず、余剰をもたせたほうが長期的には成果が出るというスタンスだが、作家・プログラマ・デザイナ・職人など、一部のものづくりの世界では一定期間がむしゃらにやったほうが良い場合もあると認めていた。これは経験的にもそうだなと思う
+- ロードマップは決めず、6 週間ごとの計画しか立てないというが、とはいえ抽象的な会社の方向性みたいなものはあるはずだと思うので、その塩梅が気になった
+- カレンダー共有、チャットにも否定的なのはすごかった
+
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4152098333/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://images-na.ssl-images-amazon.com/images/I/51qWVKgBWML._SX344_BO1,204,203,200_.jpg" alt="NO HARD WORK!: 無駄ゼロで結果を出すぼくらの働き方" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4152098333/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">NO HARD WORK!: 無駄ゼロで結果を出すぼくらの働き方</a></div><div class="amazlet-detail">ジェイソン フリード  (著), デイヴィッド ハイネマイヤー ハンソン (著), Jason Fried (著), & 2 その他<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4152098333/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
+
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798117501/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://images-na.ssl-images-amazon.com/images/I/51AATxAG7bL._SX351_BO1,204,203,200_.jpg" alt="Eric Sink on the Business of Software 革新的ソフトウェア企業の作り方" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798117501/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Eric Sink on the Business of Software 革新的ソフトウェア企業の作り方</a></div><div class="amazlet-detail">Eric Sink (著), エリック・シンク  (著), 青木 靖 (翻訳)<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798117501/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
+
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4822281116/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://images-na.ssl-images-amazon.com/images/I/41QGGQXW0QL._SX332_BO1,204,203,200_.jpg" alt="ゆとりの法則 － 誰も書かなかったプロジェクト管理の誤解" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4822281116/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">ゆとりの法則 － 誰も書かなかったプロジェクト管理の誤解</a></div><div class="amazlet-detail">トム・デマルコ (著), 伊豆原 弓 (翻訳)<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4822281116/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
