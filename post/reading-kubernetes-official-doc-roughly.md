@@ -254,16 +254,11 @@
 - [kubernetes/examples: Kubernetes application example tutorials](https://github.com/kubernetes/examples)
     - example
 - [Learn Kubernetes Basics \| Kubernetes](https://kubernetes.io/docs/tutorials/kubernetes-basics/)
-    - katacode がすごい
+    - [katacoda](https://www.katacoda.com/) がすごい
+        - チュートリアルとともにブラウザ上で実際に試せる環境
         - 複数ターミナル開ける
         - 日本からだと遅いかも
     - デフォルトでは pods は kube クラスタ内からしかアクセスできないが、kubectl proxy でプロキシ経由でアクセスできる
         - `localhost:8001`
-    - primitives
-        - deploy
-        - pod
-        - node
-        - service
-    - image を set すると即座にデプロイされる
 
 <div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B08FZX8PYW/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://m.media-amazon.com/images/I/51C+pft8SJL.jpg" alt="Kubernetes完全ガイド 第2版 impress top gearシリーズ" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B08FZX8PYW/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Kubernetes完全ガイド 第2版 impress top gearシリーズ</a></div><div class="amazlet-detail">青山真也  (著)  形式: Kindle版<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B08FZX8PYW/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
