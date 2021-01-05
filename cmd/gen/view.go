@@ -200,7 +200,7 @@ func (v View) viewFunc() template.FuncMap {
 				l = len(r)
 				suf = ""
 			}
-			return strings.Replace(string(r[0:l]), "\n", " ", -1) + suf
+			return strings.Replace(strings.Replace(string(r[0:l]), "\n", " ", -1), `"`, `&quot;`, -1) + suf
 		},
 	}
 }
