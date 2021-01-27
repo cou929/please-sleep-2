@@ -10,7 +10,7 @@ Go で [お楽しみで競プロ問題を解いたり](https://please-sleep.cou9
 
 ### Array
 
-- array 長さも含めて型
+- array は長さも含めて型
 - array は値
 
 ```go
@@ -110,7 +110,7 @@ func FindDigits(filename string) []byte {
 - 実装は雰囲気で読んだが、コンパイラの部分は全然わかっていない
     - AST から SSA を作るフェーズがあり、`append` などのビルトイン関数はそのときに処理しているようだった
     - [SSA](https://en.wikipedia.org/wiki/Static_single_assignment_form) は今回初めて知った
-- `golang/go` の compile 以下の [`gc (src/cmd/compile/internal/gc`](https://github.com/golang/go/tree/master/src/cmd/compile/internal/gc) は Garbage Collector ではなく Go Compiler の略らしい
+- `golang/go` の compile 以下の [`gc (src/cmd/compile/internal/gc)`](https://github.com/golang/go/tree/master/src/cmd/compile/internal/gc) は Garbage Collector ではなく Go Compiler の略らしい
     - [go/src/cmd/compile at master · golang/go](https://github.com/golang/go/tree/master/src/cmd/compile) に以下の記述があった
         - `It should be clarified that the name "gc" stands for "Go compiler", and has little to do with uppercase "GC", which stands for garbage collection.`
     - 紛らわしかった
