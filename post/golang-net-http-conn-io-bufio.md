@@ -1,32 +1,37 @@
 {"title":"net.Conn, net/http と io, bufio の整理","date":"2021-02-04T10:00:00+09:00","tags":["golang"]}
 
-[net.Conn](https://pkg.go.dev/net#Conn) や [net/http の Server.Serve](https://pkg.go.dev/net/http#Server.Serve) あたりを利用する際、自分の理解が甘い部分があったので改めて整理したメモ。
+[net.Conn](https://pkg.go.dev/net#Conn) や [net/http の Server.Serve](https://pkg.go.dev/net/http#Server.Serve) あたりを利用する際、理解が甘い部分があり、あらためて整理したメモ。
 
 ## [net.Conn](https://pkg.go.dev/net#Conn)
 
 - [net.Conn](https://pkg.go.dev/net#Conn) はストリーム指向のネットワーク接続
     - 今回の用途では TCP 接続を現している
-    - `io.Reader` をはじめ `io.Writer` `io.Closer` を満たしている
+    - `io.Reader` をはじめ `io.Writer`、`io.Closer` を満たしている
 - [net/http の Server.Serve](https://pkg.go.dev/net/http#Server.Serve) は HTTP サーバ実装の入り口
-    - [net.Listener](https://pkg.go.dev/net#Listener) (listen の結果返される tcp 接続の構造体) を受け取り、goroutine を起動し、リクエストのパースなどを行い、Handler を呼び出すなどする
+    - [net.Listener](https://pkg.go.dev/net#Listener) (listen の結果返される tcp 接続の構造体) を受け取り、goroutine を起動し、リクエストをパース、Handler を呼び出すなどする
 - リクエストのパースは [readRequest](https://github.com/golang/go/blob/e491c6eea9ad599a0ae766a3217bd9a16ca3a25a/src/net/http/server.go#L957) というプライベートメソッドが担当する
     - `net.Conn` から Read して ([こちらなど](https://github.com/golang/go/blob/e491c6eea9ad599a0ae766a3217bd9a16ca3a25a/src/net/textproto/reader.go#L57))、それをパースしている
 - `net/http` では [net.Conn に bufio をかませている](https://github.com/golang/go/blob/0e85fd7561de869add933801c531bf25dee9561c/src/net/http/server.go#L1861-L1862)
-    - [bufio.ReadLine](https://pkg.go.dev/bufio#Reader.ReadLine) など、生の Read よりも便利に利用している
+    - 生の Read 呼び出しよりも便利な [bufio.ReadLine](https://pkg.go.dev/bufio#Reader.ReadLine) などを利用している
 - `net.Conn.Read` は最終的に [read(2)](https://man7.org/linux/man-pages/man2/read.2.html) を呼んでいる
     - [1](https://github.com/golang/go/blob/0e85fd7561de869add933801c531bf25dee9561c/src/net/net.go#L183), [2](https://github.com/golang/go/blob/0e85fd7561de869add933801c531bf25dee9561c/src/net/fd_posix.go#L54)
 
-ここまでで、io, bufio の関係やシステムコールレベルでの tcp 接続の read について理解が曖昧だったというのが今回の背景。
+ここまでで、io と bufio の関係や、システムコールレベルでの tcp 接続の read(2) の挙動などの理解が曖昧だった、というのが今回の背景。
 
 ## [io](https://pkg.go.dev/io)
+
+https://pkg.go.dev/io
 
 - IO に関する基本的なインタフェースを提供しているパッケージ
     - `Package io provides basic interfaces to I/O primitives`
 - [io.Reader.Read](https://pkg.go.dev/io#Reader)
-    - 読み取れたデータがバッファのバイト数未満でも、残りのバッファ領域は内部的に利用される可能性がある
-    - まだ読み取れるデータがあり、かつ読み取り済みデータ量がバッファ以下の場合、通常 Read は残りのデータを待つのではなく利用可能になった分だけを呼び出し元へ返す
-    - ファイル末尾 EOF に達した場合、読み込めたバイト数 n と err == EOF を同時に返すか、err == nil を返し次の呼び出しが `n == 0 && err == EOF` を返すか、実装によって挙動にバリエーションがある
-        - どちらのパターンでもその後の呼び出しが必ず `n == 0 && err == EOF` になるのは保証されている
+    - 指定したバッファにデータを読み取って入れる
+    - 読み取れたデータの長さが指定したバッファの長さより短くでも、残りのバッファ領域が内部的に利用される可能性がある
+    - まだ読み取れるデータがあり、かつ読み取り済みデータ量がバッファ以下の場合。通常は残りのデータを待つのではなく、利用可能になった分だけを呼び出し元へ返す
+    - ファイル末尾 (EOF) に達したときの挙動は、実装によってバリエーションがある
+        - 読み込めたバイト数 n と err == EOF を同時に返す
+        - err == nil を返し次の Read 呼び出しで `n == 0 && err == EOF` を返す
+        - どちらのパターンでも、その後の Read 呼び出しでは必ず `n == 0 && err == EOF` になることが保証されている
     - 呼び出し元は err の内容に関わらず、読み取れた n byte を必ず処理しないといけない
     - Read の実装側は `n == 0 && err == nil` を返さないようにする必要がある。呼び出し側はそのようなケースでは何も起こっていない (EOF でもない) とみなすべき
 - [io.Writer.Write](https://pkg.go.dev/io#Writer)
@@ -57,7 +62,7 @@
 ## [bufio](https://pkg.go.dev/bufio)
 
 - 読み書きのバッファリング機能を提供 + いくつかのユーティリティ
-    - NewReader, NewWriter で io.Reader, io.Writer にバッファリングを追加できる
+    - NewReader, NewWriter で io.Reader, io.Writer にバッファリング機能を追加できる
 - バッファリングすると?
     - 書き込み
         - 一定のデータを内部で貯めてからまとめて書き込みを行う
@@ -67,11 +72,12 @@
         - 一定のデータを内部に貯めて、そこで充足するなら読み出し要求にはバッファから返す
         - 小さく頻度の多い Read 要求が多い場合、バッファを導入したほうが実 IO 数を減らせる
         - 加えてバッファに一度貯めることで ReadLine や Scanner 系など、アプリケーションからのデータ読み取りに便利なツールも載せられている
-    - [APUE](http://www.amazon.co.jp/exec/obidos/ASIN/B00KRB9U8K/pleasesleep-22/ref=nosim/) の 5.4 より引用
+    - Linux の標準入出力ライブラリのバッファリング機能を参考にすると、
+        - [APUE](http://www.amazon.co.jp/exec/obidos/ASIN/B00KRB9U8K/pleasesleep-22/ref=nosim/) の 5.4 より引用
 
 > 標準入出力ライブラリでバッファリングする目標は、readとwriteの呼び出し回数を最小にすることです。(図3.6では、さまざまなバッファサイズを用いた入出力動作に必要なCPU時間を示した。)さらに、各入出力ストリームのバッファリングを自動化し、アプリケーションで気にする必要がないようにします。残念ながら、もっとも混乱しやすい標準入出力ライブラリの一面がバッファリングです。
 
-- 例えば [Reader](https://github.com/golang/go/blob/32e789f4fb45b6296b9283ab80e126287eab4db5/src/bufio/bufio.go#L32-L39) だとラップ対象の `io.Reader` (underlying Reader) とバッファ (`[]byte`)、あとはバッファ内の読み取りカーソルなどを保持している
+- 例えば [Reader](https://github.com/golang/go/blob/32e789f4fb45b6296b9283ab80e126287eab4db5/src/bufio/bufio.go#L32-L39) は、ラップ対象の `io.Reader` (underlying Reader) とバッファ (`[]byte`)、あとはバッファ読み取り位置のカーソルなどを保持している
 
 ```go
 type Reader struct {
@@ -85,10 +91,10 @@ type Reader struct {
 ```
 
 - [bufio.Reader.Read](https://pkg.go.dev/bufio#Reader.Read)
-    - 最大 1 回 underlying Reader の Read を読む
-        - [バッファにあればそれを使う](https://github.com/golang/go/blob/32e789f4fb45b6296b9283ab80e126287eab4db5/src/bufio/bufio.go#L238)
+    - 最大 1 回 underlying Reader の Read を呼び出す
+        - [バッファに十分なデータが溜まっていれば、Read を呼び出さずこっちを返す](https://github.com/golang/go/blob/32e789f4fb45b6296b9283ab80e126287eab4db5/src/bufio/bufio.go#L238)
     - 任意のバイト数確実に読みたい場合は `io.ReadFull` などを使う
-    - EOF の場合は n は必ず 0
+    - EOF の場合、n (Read の 1 つ目の戻り値) は必ず 0
 - [Scanner](https://pkg.go.dev/bufio#Scanner)
     - 改行区切りのテキストなど、特定のデリミタ (SplitFunc) ごとにデータを読み取るための便利なインタフェース
     - なんとなくユーザーからすると、bufio というパッケージ名なのでこの機能は別パッケージなっていたほうがわかりやすい気がした
@@ -96,9 +102,9 @@ type Reader struct {
 
 ## tcp と read(2)
 
-[APUE](http://www.amazon.co.jp/exec/obidos/ASIN/B00KRB9U8K/pleasesleep-22/ref=nosim/) と [UNIXネットワークプログラミング](http://www.amazon.co.jp/exec/obidos/ASIN/4894712059/pleasesleep-22/ref=nosim/) を読み返し。
+[APUE](http://www.amazon.co.jp/exec/obidos/ASIN/B00KRB9U8K/pleasesleep-22/ref=nosim/) と [UNIXネットワークプログラミング](http://www.amazon.co.jp/exec/obidos/ASIN/4894712059/pleasesleep-22/ref=nosim/) を読み返した。
 
-- APUE 16.2ソケット記述子 より
+- APUE 16.2 ソケット記述子 より
 
 > ソケットSOCK_STREAMはバイトストリームサービスを提供します。アプリケーションにはメッセージ境界は分りません。つまり、ソケットSOCK_STREAMからデータを読み取ると、送り手が書き出したバイト数と同じ数を返さないこともあります。最終的には送られたものをすべて受け取りますが、それには数回の関数呼び出しが必要になるでしょう。
 
@@ -108,14 +114,14 @@ type Reader struct {
     - つまり接続している間は区切り無くデータを read できる
     - 接続がクローズされているときに read できたバイト数が 0 になる
         - このケースを Go が `io.EOF` として扱う
-    - tcp よりは上のレイヤーのプロトコル目線で、アプリケーションが気にするべきこと
-        - 一度の read 呼び出しで、アプリケーションが必要とするデータが読み取れない場合が正常であると認識する必要がある
-        - ループで複数回 read を呼び出すような実装が必要
+    - tcp より上位レイヤーのプロトコル目線で、アプリケーションが気にするべきこと
+        - 一度の read 呼び出しでは、アプリケーションが必要とするデータをすべて読み取れないことがある。これが正常であると認識する必要がある
+        - よってループで複数回 read を呼び出すような実装が必要
             - 当たり前だけど buf より長いメッセージが来たら複数回の read 呼び出しが必要
         - データの「区切り」は自分で処理する必要がある
-            - http/1x ならテキストとして改行区切りで扱うなど
+            - HTTP/1x ならテキストとして改行区切りで扱うなど
 - なお udp はデータグラム通信
-    - バイトストリームに対して、固定最大長、接続という概念がない、非信頼性の通信など
+    - バイトストリームに対して、固定最大長、接続という概念がない、非信頼性の通信といった違いがある
 
 ## ここまでの実験
 
@@ -125,7 +131,7 @@ type Reader struct {
     - 2000 番ポートで tcp 接続を待ち受け
     - 接続確立したら read
     - strace でシステムコールの状況確認
-    - 今回は ubuntu16.04 でやってみた
+    - 今回は ubuntu 16.04 でやってみた
 
 ```sh
 vagrant@ubuntu-xenial:~$ cat /etc/lsb-release
