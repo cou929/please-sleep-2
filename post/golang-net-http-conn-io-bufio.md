@@ -1,4 +1,4 @@
-{"title":"net/http.Conn と io, bufio の整理","date":"2021-02-04T10:00:00+09:00","tags":["golang"]}
+{"title":"net.Conn, net/http と io, bufio の整理","date":"2021-02-04T10:00:00+09:00","tags":["golang"]}
 
 [net.Conn](https://pkg.go.dev/net#Conn) や [net/http の Server.Serve](https://pkg.go.dev/net/http#Server.Serve) あたりを利用する際、自分の理解が甘い部分があったので改めて整理したメモ。
 
