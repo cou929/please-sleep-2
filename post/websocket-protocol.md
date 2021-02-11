@@ -42,6 +42,7 @@ WebSocket は [仕様がまとまってからもう 10 年くらい経ってい�
     - [Go の Slice の内部構造 \- Please Sleep](https://please-sleep.cou929.nu/golang-array-and-slice-note.html)
 - [crossbario/autobahn\-testsuite: Autobahn WebSocket protocol testsuite](https://github.com/crossbario/autobahn-testsuite) というテストケースがあることを知った
     - [メンテが滞っている感](https://github.com/crossbario/autobahn-testsuite/issues/104) があり手はだしていないが、真面目に実装する際にこういうものがあると便利そうだと思った
+- [Wireshark](https://www.wireshark.org/) で常に通信をキャプチャしておくと、開発・デバッグに便利だった
 
 ## RFC 6455
 
