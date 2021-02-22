@@ -205,7 +205,7 @@ $ system_profiler SPUSBDataType
 ```
 
 - rvi インタフェースを起動する
-    - xcode の `Devices and Simulators`
+    - 先程調べた UDID を引数に渡す
 
 ```sh
 $ rvictl -s <UDID>
