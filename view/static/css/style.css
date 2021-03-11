@@ -717,3 +717,8 @@ figcaption {
   color: #998;
   margin-bottom: 1.618em;
 }
+
+article img {
+  display: block;
+  margin: 0 auto;
+}
