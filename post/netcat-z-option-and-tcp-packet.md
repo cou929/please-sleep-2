@@ -42,10 +42,14 @@ ref. [Man page of TCPDUMP](https://www.tcpdump.org/manpages/tcpdump.1.html)
 - 3 way handshake 後、すぐに FIN を送って接続終了のシーケンスに入っている
 - いずれも seq 1 (length 0) のままで何もデータを送っていないことも確認できる
 
+<div></div>
+
 ```
 $ nc -w5 -v -z please-sleep.cou929.nu 80
 Connection to please-sleep.cou929.nu 80 port [tcp/http] succeeded!
 ```
+
+<div></div>
 
 ```
 $ sudo tcpdump host please-sleep.cou929.nu and port 80
@@ -64,10 +68,14 @@ $ sudo tcpdump host please-sleep.cou929.nu and port 80
 - 今回は `-w 5` と 5 秒でタイムアウトするようにした
     - tcpdump の出力では、5 秒後に FIN を送っている様子がわかる
 
+<div></div>
+
 ```
 $ nc -w5 -v please-sleep.cou929.nu 80
 Connection to please-sleep.cou929.nu 80 port [tcp/http] succeeded!
 ```
+
+<div></div>
 
 ```
 $ sudo tcpdump host please-sleep.cou929.nu and port 80
