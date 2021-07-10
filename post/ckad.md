@@ -16,7 +16,7 @@ Udemy の講義が安くなっていたタイミングで買ってあったの�
 
 [Certified Kubernetes Application Developer \(CKAD\) \- Linux Foundation \- Training](https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/)
 
-Udemy にも練習問題はついているんだけど、試験環境 (kakakoda ベースの古い方?) の遅延がひどくてかなりストレスだった。本家の方 ([killer.sh](https://killer.sh/) ベース) は動作も軽快だし UI も本番と近いのでこちらだけで良かった。
+Udemy にも練習問題はついているんだけど、試験環境 (katakoda ベースの古い方?) の遅延がひどくてかなりストレスだった。本家の方 ([killer.sh](https://killer.sh/) ベース) は動作も軽快だし UI も本番と近いのでこちらだけで良かった。
 
 一応 [dgkanatsios/CKAD\-exercises: A set of exercises to prepare for Certified Kubernetes Application Developer exam by Cloud Native Computing Foundation](https://github.com/dgkanatsios/CKAD-exercises) も流し見したけど Udemy と本家の練習問題だけやれば十分だったと思う。
 
