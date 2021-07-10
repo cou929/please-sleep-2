@@ -2,6 +2,8 @@
 
 <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="e3862d34-4b5b-4eb8-972e-c11b56343f84" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
 
+<div></div>
+
 [CKAD: Certified Kubernetes Application Developer \- Credly](https://www.credly.com/badges/e3862d34-4b5b-4eb8-972e-c11b56343f84/public_url)
 
 ## 試験対策
@@ -10,7 +12,11 @@ Udemy の講義が安くなっていたタイミングで買ってあったの�
 
 [Kubernetes Certified Application Developer \(CKAD\) Training \| Udemy](https://www.udemy.com/course/certified-kubernetes-application-developer/)
 
-あとは本家 Linux Fundation のサイトで受験料を支払うと、受験 Tips (`alias k=kubectl` するといいよ、みたいな細かいところまであった) とか、練習問題も 2 セッションついてきたので、前日に一通りやった。Udemy にも練習問題はついているんだけど、試験環境 (kakakoda ベースの古い方?) の遅延がひどくてかなりストレスだった。本家の方 ([killer.sh](https://killer.sh/) ベース) は動作も軽快だし UI も本番と近いのでこちらだけで良かった。
+あとは本家 Linux Fundation のサイトで受験料を支払うと、受験 Tips (`alias k=kubectl` するといいよ、みたいな細かいところまであった) とか、練習問題も 2 セッションついてきたので、前日に一通りやった。
+
+[Certified Kubernetes Application Developer \(CKAD\) \- Linux Foundation \- Training](https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/)
+
+Udemy にも練習問題はついているんだけど、試験環境 (kakakoda ベースの古い方?) の遅延がひどくてかなりストレスだった。本家の方 ([killer.sh](https://killer.sh/) ベース) は動作も軽快だし UI も本番と近いのでこちらだけで良かった。
 
 一応 [dgkanatsios/CKAD\-exercises: A set of exercises to prepare for Certified Kubernetes Application Developer exam by Cloud Native Computing Foundation](https://github.com/dgkanatsios/CKAD-exercises) も流し見したけど Udemy と本家の練習問題だけやれば十分だったと思う。
 
@@ -22,7 +28,7 @@ Udemy の講義が安くなっていたタイミングで買ってあったの�
 
 Udemy の講義は定価 2 万円ほどだけど、頻繁に 9 割以上割り引きしているので、個人で買うならタイミングを見計らったほうが良い。
 
-試験の料金は 2021 年の 7 月から値上げしたらしく、自分はちょうど値上げ直後でタイミングが悪かった。
+試験の料金は 2021 年の 7 月から値上げしたらしく、Exam only で $375 だった。自分はちょうど値上げ直後でタイミングが悪かった。
 
 [Certification Exam Prices Increase July 1 \- Lock in Current Pricing \- Linux Foundation \- Training](https://training.linuxfoundation.org/announcements/certification-exam-prices-increase-july-1-lock-in-current-pricing/)
 
@@ -34,8 +40,8 @@ Udemy の講義は定価 2 万円ほどだけど、頻繁に 9 割以上割り�
 
 ## 雑感
 
-4 月から業務で k8s を使うようになって、必要なところだけを落下傘的に調べていたが、このタイミングでこうして体系的に学べたのはとても良かった。普段はあまり資格をとったりしないが、Udemy での講義形式での勉強と試験対策の練習問題をたくさんやることは、意外と理解の定着にもつながった感覚があり、効率よく学習できたと思う。
+4 月から業務で k8s を使うようになって、必要なところだけを落下傘的に勉強していた。多少業務で触り始めたこのタイミングで体系的に学べたのはとても良かった。あまり資格をとったりした経験がない (初めてかもしれない) が、Udemy での講義形式での勉強と試験対策の練習問題をたくさんやることが、思っていたよりも理解の定着につながった感覚がある。効率よく学習できて良かったと思う。
 
-一方で CKAD は短時間で問題数が多いので [Imperative commands](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-command/) をかなり駆使することになる。実業務でそんなに使わないような気がするのはちょっと気になった。
+一方で CKAD は問題数が多いので [Imperative commands](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-command/) をかなり駆使することになる。実業務でそんなに使わないような気がするのはちょっと気になった。
 
-次は CKA, CKS もやってみようと思っている (Udemy の割り引きキャンペーンや受験料割引キャンペーンを待ちつつ)
+次は CKA, CKS もやってみようと思っている (Udemy の割り引きキャンペーンや受験料割引キャンペーンを待ちつつ)。
