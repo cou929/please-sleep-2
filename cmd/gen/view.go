@@ -62,6 +62,7 @@ func (v View) Build(posts post.Posts) error {
 			if err := root.ExecuteTemplate(f, t.Name(), tv); err != nil {
 				return fmt.Errorf("failed to execute template %s. err=%w", t.Name(), err)
 			}
+			f.Close()
 			continue
 		}
 
@@ -86,6 +87,7 @@ func (v View) Build(posts post.Posts) error {
 			if err := root.ExecuteTemplate(f, t.Name(), tv); err != nil {
 				return fmt.Errorf("failed to execute template %s. err=%w", t.Name(), err)
 			}
+			f.Close()
 		}
 	}
 
