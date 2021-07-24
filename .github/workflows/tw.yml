@@ -2,7 +2,7 @@ name: tweet an update
 
 on:
   schedule:
-    - cron: "1 16 * * *"
+    - cron: "30 11 * * *"
   workflow_dispatch:
 
 jobs:
