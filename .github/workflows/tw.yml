@@ -19,10 +19,15 @@ jobs:
           echo "::set-output name=title::$(head -n1 ${latest} | jq -r .title)"
           echo "::set-output name=file::$(basename ${latest} | sed -e 's/.md$/.html/')"
 
-      - name: step2
+      - name: post tweet
+        uses: ethomson/send-tweet-action@v1
         env:
           TITLE: ${{steps.fetch_latest.outputs.title}}
           FILE: ${{steps.fetch_latest.outputs.file}}
-        run: |
-          echo $TITLE
-          echo $FILE
+        with:
+          status: "test ${TITLE} ${FILE}"
+          consumer-key: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
+          consumer-secret: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
+          access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+
