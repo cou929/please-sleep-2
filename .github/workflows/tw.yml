@@ -1,6 +1,8 @@
 name: tweet an update
 
 on:
+  schedule:
+    - cron: "54 15 * * *"
   workflow_dispatch:
 
 jobs:
@@ -25,4 +27,3 @@ jobs:
           consumer-secret: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
           access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-
