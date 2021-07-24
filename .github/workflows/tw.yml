@@ -22,7 +22,7 @@ jobs:
       - name: post tweet
         uses: ethomson/send-tweet-action@v1
         with:
-          status: "test ${{steps.fetch_latest.outputs.title}} https://please-sleep.cou929.nu/${{steps.fetch_latest.outputs.file}}"
+          status: "test\n${{steps.fetch_latest.outputs.title}}\nhttps://please-sleep.cou929.nu/${{steps.fetch_latest.outputs.file}}"
           consumer-key: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
           consumer-secret: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
           access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
