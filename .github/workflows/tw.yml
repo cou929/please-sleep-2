@@ -14,6 +14,10 @@ jobs:
         id: fetch_latest
         run: |
           echo $(git log --since '14 days ago' --name-status post)
+          echo "---"
+          echo $(git log --since '14 days ago' --name-status --pretty=format:"" post | egrep '^A.*?.md$' )
+          echo "---"
+          echo $(git log --since '14 days ago' --name-status --pretty=format:"" post | egrep '^A.*?.md$' | head -n1)
           latest=$(git log --since '14 days ago' --name-status --pretty=format:"" post | egrep '^A.*?.md$' | head -n1 | cut -f2 | jq -r .title)
           echo "::set-output name=title::$(head -n1 ${latest} | jq -r .title)"
           echo "::set-output name=file::$(basename ${latest} | sed -e 's/.md$/.html/')"
