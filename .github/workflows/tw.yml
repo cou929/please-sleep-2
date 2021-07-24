@@ -21,11 +21,8 @@ jobs:
 
       - name: post tweet
         uses: ethomson/send-tweet-action@v1
-        env:
-          TITLE: ${{steps.fetch_latest.outputs.title}}
-          FILE: ${{steps.fetch_latest.outputs.file}}
         with:
-          status: "test ${TITLE} ${FILE}"
+          status: "test ${% raw %}{{ steps.fetch_latest.output.title }}{% endraw %} ${% raw %}{{ steps.fetch_latest.output.file }}{% endraw %}"
           consumer-key: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
           consumer-secret: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
           access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
