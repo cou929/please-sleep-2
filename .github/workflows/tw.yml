@@ -1,0 +1,26 @@
+name: tweet an update
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: fetch a latest post
+        id: fetch_latest
+        run: |
+          latest=$(git log --since '14 days ago' --name-status --pretty=format:"" post | egrep '^A.*?.md$' | head -n1 | cut -f2 | jq -r .title)
+          echo "::set-output name=title::$(head -n1 ${latest} | jq -r .title)"
+          echo "::set-output name=file::$(basename ${latest} | sed -e 's/.md$/.html/')"
+
+      - name: step2
+        env:
+          TITLE: ${{steps.fetch_latest.outputs.title}}
+          FILE: ${{steps.fetch_latest.outputs.file}}
+        run: |
+          echo $TITLE
+          echo $FILE
