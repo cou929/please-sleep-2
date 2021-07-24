@@ -13,6 +13,7 @@ jobs:
       - name: fetch a latest post
         id: fetch_latest
         run: |
+          echo $(git log)
           echo $(git log --since '14 days ago' --name-status post)
           echo "---"
           echo $(git log --since '14 days ago' --name-status --pretty=format:"" post | egrep '^A.*?.md$' )
