@@ -441,34 +441,9 @@ nav .prev {
   float: left;
   text-align: left;
 }
-nav .prev:before {
-  font-family: 'FontAwesome';
-  display: inline-block;
-  font-size: 100%;
-  margin-right: .618em;
-  font-weight: normal;
-  line-height: 1em;
-  width: 1em;
-  content: "\f053";
-  font-size: 1.4em;
-  line-height: .4;
-}
 nav .next {
   float: right;
   text-align: right;
-}
-nav .next:after {
-  font-family: 'FontAwesome';
-  display: inline-block;
-  font-size: 100%;
-  margin-left: .618em;
-  font-weight: normal;
-  line-height: 1em;
-  width: 1em;
-  text-align: right;
-  content: "\f054";
-  font-size: 1.4em;
-  line-height: .4;
 }
 aside {
   margin: 0 0 3.631em;
@@ -725,4 +700,9 @@ article img {
 
 article .duration {
   font-size: 80%;
+}
+
+article .profile {
+  width: 250px;
+  margin: 0;
 }

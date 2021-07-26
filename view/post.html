@@ -14,11 +14,11 @@
     <nav>
         {{if ne .ArticleIndex (lastIndex .Posts)}}
         {{$prev := index .Posts (inc .ArticleIndex)}}
-        <a class="prev" href="{{$prev.DestFileName}}">{{$prev.Title}}</a>
+        <a class="prev" href="{{$prev.DestFileName}}"><i class="fas fa-angle-left"></i> {{$prev.Title}}</a>
         {{end}}
         {{if ne .ArticleIndex 0}}
         {{$next := index .Posts (dec .ArticleIndex)}}
-        <a class="next" href="{{$next.DestFileName}}">{{$next.Title}}</a>
+        <a class="next" href="{{$next.DestFileName}}">{{$next.Title}} <i class="fas fa-angle-right"></i></a>
         {{end}}
     </nav>
 </section>
