@@ -722,3 +722,7 @@ article img {
   display: block;
   margin: 0 auto;
 }
+
+article .duration {
+  font-size: 80%;
+}
