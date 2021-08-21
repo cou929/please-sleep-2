@@ -4,50 +4,54 @@ GCP 上に構築されたシステムを運用していると日々 Monitoring D
 
 そんな中 Cloud Monitoring のドキュメントに [Concept > Metrics, time series, and resources](https://cloud.google.com/monitoring/api/v3/metrics) という項目があることに気づいた。読んでみると Metrics の基礎的な概念をざっと理解できてよかった。またその概念の GCP 上での呼び名もわかるり、そこからコンソールのこの項目はこのことだったのかという紐付けができ、それも良かった。以下は読んだメモ。
 
-## [Metrics, time series, and resources  \|  Cloud Monitoring  \|  Google Cloud](https://cloud.google.com/monitoring/api/v3/metrics)
+## Metrics, time series, and resources
+
+[Metrics, time series, and resources  \|  Cloud Monitoring  \|  Google Cloud](https://cloud.google.com/monitoring/api/v3/metrics)
 
 Cloud Monitoring に登場する概念はハイレベルから見ると以下の 3 つ。
 
 - Monitored-resource types
-	- モニタリング対象のリソース
-	- 例えば `gcs_bucket` など
+    - モニタリング対象のリソース
+    - 例えば `gcs_bucket` など
 - Metric types
-	- 対象のリソースから取得できる指標
-	- 例えば gcs_bucket ごとのリクエスト数など
-	- 時系列データの種別や各値の型のバリエーションがある
+    - 対象のリソースから取得できる指標
+    - 例えば gcs_bucket ごとのリクエスト数など
+    - 時系列データの種別や各値の型のバリエーションがある
 - Time series
-	- そのメトリクスの時系列データ
-	- 時系列データは timestamp と値のペア
+    - そのメトリクスの時系列データ
+    - 時系列データは timestamp と値のペア
 
-## [Filtering and aggregation: manipulating time series  \|  Cloud Monitoring](https://cloud.google.com/monitoring/api/v3/aggregation)
+## Filtering and aggregation: manipulating time series
+
+[Filtering and aggregation: manipulating time series  \|  Cloud Monitoring](https://cloud.google.com/monitoring/api/v3/aggregation)
 
 時系列データはそのままだと膨大な量なので、通常は加工して用いる。加工は大きく Filtering と Aggrigation の 2 ステップで行う。
 
 - Filtering
-	- 不要なデータを取り除く
-	- 期間指定や、値のしきい値で外れ値を取り除いたり
+    - 不要なデータを取り除く
+    - 期間指定や、値のしきい値で外れ値を取り除いたり
 - Aggregation
-	- 複数のデータをそれより少数の代表値に集約する
+    - 複数のデータをそれより少数の代表値に集約する
 
 特に Aggrigation は多種・複雑な設定ができるので覚えることが多い。今回理解を整理したかったのは主にここ。
 
 Aggregation (あるいは summarization) には 2 つの側面がある。
 
 - Alignment
-	- データをひとつの時系列に整列させる
+    - データをひとつの時系列に整列させる
 - Reduction
-	- 複数の時系列を結合する
-	- 事前に alignment されている必要がある
+    - 複数の時系列を結合する
+    - 事前に alignment されている必要がある
 
 ### Alignment
 
 あるいは 1 つの時系列内での正則化。ある時系列内のデータポイントはばらばらの間隔で記録されているが、それを一定間隔ごとに整列させる。次のステップで整列をさせる。
 
 - 整列の間隔を指定する
-	- 間隔は interval, period, alignment period, alignment window などと呼ばれる
+    - 間隔は interval, period, alignment period, alignment window などと呼ばれる
 - 指定した interval 内での代表値を計算する
-	- 例えば平均値、最大値、最小値など、たくさんの関数がある
-		- [Aligner](https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.alertPolicies#Aligner) と呼ばれる
+    - 例えば平均値、最大値、最小値など、たくさんの関数がある
+        - [Aligner](https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.alertPolicies#Aligner) と呼ばれる
 
 Aligner によって、各 interval ごとにひとつの代表値が計算される。こうして正規化された interval ごとに値が並んだ時系列が生成される。
 
@@ -59,27 +63,31 @@ Aligner によって、各 interval ごとにひとつの代表値が計算さ�
 
 複数の系列をまとめる際、Grouping で指定した軸ごとにまとめることができる。指定しなければすべての系列が一つの系列にまとめられる。例えばすべての Pod のメトリクスの系列を production cluster と staging cluster でグルーピングし 2 系列にまとめる、といったユースケースが考えられる。
 
-## [Value types and metric kinds  \|  Cloud Monitoring  \|  Google Cloud](https://cloud.google.com/monitoring/api/v3/kinds-and-types)
+## Value types and metric kinds
+
+[Value types and metric kinds  \|  Cloud Monitoring  \|  Google Cloud](https://cloud.google.com/monitoring/api/v3/kinds-and-types)
 
 - Value types (各データの値の型)
-	- BOOL, INT64, DOUBLE, STRING などの基本的な型と [Distribution](https://cloud.google.com/monitoring/api/ref_v3/rest/v3/TypedValue#Distribution) がある
+    - BOOL, INT64, DOUBLE, STRING などの基本的な型と [Distribution](https://cloud.google.com/monitoring/api/ref_v3/rest/v3/TypedValue#Distribution) がある
 - Metric kind (指標の種別)
-	- gauge
-		- 単純な値
-	- delta
-		- 前の値からの差分
-	- cumulative
-		- 累積
+    - gauge
+        - 単純な値
+    - delta
+        - 前の値からの差分
+    - cumulative
+        - 累積
 - [有効な組み合わせとそうでないものがある](https://cloud.google.com/monitoring/api/v3/kinds-and-types)
-	- 例えば BOOL の delta はありえない
+    - 例えば BOOL の delta はありえない
 
-## [Retention and latency of metric data  \|  Cloud Monitoring  \|  Google Cloud](https://cloud.google.com/monitoring/api/v3/latency-n-retention)
+## Retention and latency of metric data
+
+[Retention and latency of metric data  \|  Cloud Monitoring  \|  Google Cloud](https://cloud.google.com/monitoring/api/v3/latency-n-retention)
 
 - Data retension (保持期間) は以下で定義されている
-	- [Quotas and limits  \|  Cloud Monitoring  \|  Google Cloud](https://cloud.google.com/monitoring/quotas#data_retention_policy)
-	- たいていのものは 6 週間
+    - [Quotas and limits  \|  Cloud Monitoring  \|  Google Cloud](https://cloud.google.com/monitoring/quotas#data_retention_policy)
+    - たいていのものは 6 週間
 - Latency (イベントが発生してから参照可能になるまでの時間)
-	- [各指標のドキュメント](https://cloud.google.com/monitoring/api/metrics) に `Sampled every 60 seconds. After sampling, data is not visible for up to 240 seconds.` と言った説明がある
+    - [各指標のドキュメント](https://cloud.google.com/monitoring/api/metrics) に `Sampled every 60 seconds. After sampling, data is not visible for up to 240 seconds.` と言った説明がある
 
 ## PR
 
