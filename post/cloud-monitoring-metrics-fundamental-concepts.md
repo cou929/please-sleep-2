@@ -2,7 +2,7 @@
 
 GCP 上に構築されたシステムを運用していると日々 Monitoring Dashbord や Metrics Explorer を見ることになると思う。Metrics の設定項目は結構複雑で、いつもなんとなくやりたいことはできているのだが、理解が曖昧で不安だった。
 
-そんな中 Cloud Monitoring のドキュメントに [Concept > Metrics, time series, and resources](https://cloud.google.com/monitoring/api/v3/metrics) という項目があることに気づいた。読んでみると Metrics の基礎的な概念をざっと理解できてよかった。またその概念の GCP 上での呼び名もわかるり、そこからコンソールのこの項目はこのことだったのかという紐付けができ、それも良かった。以下は読んだメモ。
+そんな中 Cloud Monitoring のドキュメントに [Concept > Metrics, time series, and resources](https://cloud.google.com/monitoring/api/v3/metrics) という項目があることに気づいた。読んでみると Metrics の基礎的な概念をざっと理解できてよかった。またその概念の GCP 上での呼び名もわかり、コンソールのこの項目はこのことだったのかという紐付けができ、それも良かった。以下は読んだメモ。
 
 ## Metrics, time series, and resources
 
@@ -29,23 +29,23 @@ Cloud Monitoring に登場する概念はハイレベルから見ると以下の
 
 - Filtering
     - 不要なデータを取り除く
-    - 期間指定や、値のしきい値で外れ値を取り除いたり
+    - 集計期間の指定や、しきい値で外れ値を取り除いたり
 - Aggregation
     - 複数のデータをそれより少数の代表値に集約する
 
 特に Aggrigation は多種・複雑な設定ができるので覚えることが多い。今回理解を整理したかったのは主にここ。
 
-Aggregation (あるいは summarization) には 2 つの側面がある。
+Aggregation (あるいは Summarization) には 2 つの側面がある。
 
 - Alignment
-    - データをひとつの時系列に整列させる
+    - ひとつの時系列のなかでデータを整列させる
 - Reduction
-    - 複数の時系列を結合する
-    - 事前に alignment されている必要がある
+    - 複数の時系列を統合する
+    - 事前に Alignment されている必要がある
 
 ### Alignment
 
-あるいは 1 つの時系列内での正則化。ある時系列内のデータポイントはばらばらの間隔で記録されているが、それを一定間隔ごとに整列させる。次のステップで整列をさせる。
+あるいは 1 つの時系列内での正則化。ある時系列内のデータポイントはばらばらの間隔で記録されているが、それを一定間隔ごとに整列させる。次のステップで行う。
 
 - 整列の間隔を指定する
     - 間隔は interval, period, alignment period, alignment window などと呼ばれる
@@ -53,15 +53,15 @@ Aggregation (あるいは summarization) には 2 つの側面がある。
     - 例えば平均値、最大値、最小値など、たくさんの関数がある
         - [Aligner](https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.alertPolicies#Aligner) と呼ばれる
 
-Aligner によって、各 interval ごとにひとつの代表値が計算される。こうして正規化された interval ごとに値が並んだ時系列が生成される。
+Aligner によって、各 interval ごとにひとつの代表値が計算される。結果として interval ごとに等間隔で値が並んだ系列が生成される。
 
 ### Reduction
 
-複数の時系列を一つにまとめるステップ。例えば [Memorystore redis の redis/stats/cpu_utilization という metrics](https://cloud.google.com/monitoring/api/metrics_gcp#redis/stats/cpu_utilization) は user, sys それぞれの cpu 使用率を記録しているが、これを総合した cpu 使用率を見たいときなどがユースケースだと思う。前提として Alignemt された時系列でないと Reduction できない。
+複数の時系列を一つにまとめるステップ。例えば [Memorystore redis の redis/stats/cpu_utilization という metrics](https://cloud.google.com/monitoring/api/metrics_gcp#redis/stats/cpu_utilization) は user, sys それぞれの cpu 使用率を記録している。この両方を含めた全体の cpu 使用率を見たいときなどがユースケースだと思う。前提として Alignemt された時系列でないと Reduction できない。
 
-数値をまとめる関数は [Reducer](https://cloud.google.com/monitoring/api/v3/aggregation) と呼ばれる。内容は Aligner と対になっている。(ここは同じ関数が別名で二度登場するので、所見で Metrics Explorer を見て混乱するポイントだと思う)
+数値をまとめる関数は [Reducer](https://cloud.google.com/monitoring/api/v3/aggregation) と呼ばれる。内容は Aligner と対になっている。(同じ関数が別名で二度登場するので、Metrics Explorer の初見で混乱するポイントだと思う)
 
-複数の系列をまとめる際、Grouping で指定した軸ごとにまとめることができる。指定しなければすべての系列が一つの系列にまとめられる。例えばすべての Pod のメトリクスの系列を production cluster と staging cluster でグルーピングし 2 系列にまとめる、といったユースケースが考えられる。
+複数の系列をまとめる際、Grouping で指定した軸ごとにまとめることができる。指定しなければすべての系列が一つにまとめられる。例えば複数の Pod のメトリクスの系列を production cluster と staging cluster でグルーピングし 2 系列にまとめる、といったユースケースが考えられる。
 
 ## Value types and metric kinds
 
