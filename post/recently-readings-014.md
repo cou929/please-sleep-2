@@ -1,0 +1,43 @@
+{"title":"最近読んだもの 14","date":"2021-08-29T22:30:00+09:00","tags":["readings"]}
+
+## 記事
+
+- [Some reasons to measure](https://danluu.com/why-benchmark/)
+    - 計測（というより、KPIというか、評価指標？）の大事さ
+    - 例示がすごくて圧巻
+    - 評価方法が確立していない分野は最適化されていない。何かを作ることと同様に評価することの重要性は高い
+- [Weird Languages](http://paulgraham.com/weird.html)
+    - 世の中のコードの 99.5% はライブライ呼び出しのグルー
+    - 奇妙な言語の奇妙な機能は他の 0.5% のユースケースのためにある
+    - いろんな考え方を学ぶのに、奇妙な言語を使って一般的ならものとの差異を考察するとよい
+    - 奇妙な言語の例が Lisp のマクロで恐れ入った
+- [One row, many threads: How to avoid database duplicates in Rails applications — Martian Chronicles, Evil Martians’ team blog](https://evilmartians.com/chronicles/one-row-many-threads-how-to-avoid-database-duplicates-in-rails-applications)
+    - SELECT 結果を使った更新はロック取ってアトミックにしないとだめとか、rails の uniquness validation はスレッドセーフでないとか、ほぼ当たり前の内容だが、ユニークキーがはってあるテーブルで create or find をするときのベンチマークが参考になった
+    - [create_or_find_by!](https://apidock.com/rails/v6.0.0/ActiveRecord/Relation/create_or_find_by) (というメソッドがあるのもちょっと驚きだった) よりも `create!` + `ActiveRecord::RecordNotUnique` を自分で rescue したほうが良い結果がでたらしい (重複レコードが少ないケース)
+    - uniqueness validation がスレッドセーフでないという課題に加え、`create_or_find_by` と一緒に使うと素直な挙動にならない (重複していた場合、先にバリデーションで落とされてしまうので、`find_by` 相当処理が走らない) というのはなるほどだった
+- [Demystifying Rails autoloading \| kyrofa's blog](https://kyrofa.com/posts/demystifying-rails-autoloading/)
+    - rails を使う際に require しなくていい理由を、ruby, bundler, rails の autoloading がそれぞれ何をやっているか切り分けて説明してくれていてよかった
+    - ruby と rails に同時に入門するとどちらがその仕組みを提供しているか混乱するという記載があり共感
+- [Online Schema Change for MySQL & MariaDB \- Comparing GitHub’s gh\-ost vs pt\-online\-schema\-change \| Severalnines](https://severalnines.com/blog/online-schema-change-mysql-mariadb-comparing-github-s-gh-ost-vs-pt-online-schema-change)
+    - percona の pt-online-schema-change と github の gh-osc の解説
+    - 動作の仕組みと limitation
+- [How to Improve Upon Google’s Four Golden Signals of Monitoring \| Rootly](https://rootly.io/blog/how-to-improve-upon-google-s-four-golden-signals-of-monitoring)
+    - SRE Book の `Four Golden Signals of Monitoring` の説明とその先の改善
+    - 4 golden signals は、SRE が取得すべき指標をレイテンシ、リクエスト数、エラー、リソースの使用率という四つに定義したもの
+    - これは包括的で端的ですばらしい
+    - 一方で実戦ではさらに考慮すべき点がある
+        - 細かい詳細指標が実際には必要になる
+        - 特にレイテンシなど、全体ではなく外れ値も見る必要がある
+        - ビジネスのパフォーマンスと結びつけて考える必要がある
+- [Responsible Monkeypatching in Ruby \| AppSignal Blog](https://blog.appsignal.com/2021/08/24/responsible-monkeypatching-in-ruby.html)
+    - Ruby でモンキーパッチをあてる際の tips
+    - Class やメソッドの存在確認、対象モジュールのバージョン確認を入れるのは良かった
+    - 最終的にはパッチは無くなるのがゴールとして、一定期間後にワーニングを出すのも、徹底していて面白かった
+    - 前半のモンキーパッチによるバグや障害の例は読んでいて辛かった
+    - `great power comes great responsibility` というコンセプトには前から違和感があった。仕事で本番運用する環境では、ヒューマンエラーにはシステムで対策するのが基本だが、このコンセプトはその真逆と言える、だったからかもしれない（単に用途のミスマッチの話で、優劣の話ではない）
+- [Go 1\.17 is released \- go\.dev](https://go.dev/blog/go1.17)
+    - ちょっと前だけど
+    - パフォーマンス 5% 改善した変更は気になる
+- [The underutilized usefulness of sync\.Once \| ramblings of 1lann](https://blog.chuie.io/posts/synconce/)
+    - api サーバがそのバックエンドからのレスポンスをキャッシュするケースを題材に sync.Once の解説
+    - Go でも平行処理は慣れないと難しい。書く機会がそんなにないし
