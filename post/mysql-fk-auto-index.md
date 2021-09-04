@@ -107,3 +107,7 @@ Create Table: CREATE TABLE `table3` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 1 row in set (0.00 sec)
 ```
+
+## PR
+
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B01LCJRCYE/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://m.media-amazon.com/images/I/51GD7yZsLVL.jpg" alt="詳解MySQL 5.7 止まらぬ進化に乗り遅れないためのテクニカルガイド" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B01LCJRCYE/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">詳解MySQL 5.7 止まらぬ進化に乗り遅れないためのテクニカルガイド</a></div><div class="amazlet-detail">奥野幹也 (著)  形式: Kindle版<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B01LCJRCYE/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
