@@ -292,6 +292,8 @@ mysql> SELECT * FROM table1;
 
 - そこで Generated Columns を使いそちらにユニークインデックスを張ることで要件を満たす
     - `not_archived TINYINT GENERATED ALWAYS AS (IF(deleted_at IS NULL,  1, NULL))` というカラムを作り、name との複合インデックスにする
+    - この時 `deleted_at IS NOT NULL` の場合、`not_archived` は NULL になるのがポイント
+        - NULL ならば複数レコードが共存できるので、「削除済みのものは重複可」「未削除のものは重複不可」を実現できる
 
 ```sql
 mysql> ALTER TABLE sample ADD COLUMN not_archived TINYINT GENERATED ALWAYS AS (IF(deleted_at IS NULL,  1, NULL));
