@@ -19,7 +19,7 @@
     - 自分の場合これまで x86 前提の環境だったので、結局ここの移行コストが一番高かった (まだ全部終わっていない)
 
 ```sh
-2022-01-01 00:31 ubuntu@t2 cocalero-api develop$ uname -a
+2022-01-01 00:31 ubuntu@t2 $ uname -a
 Linux t2 5.4.0-91-generic #102-Ubuntu SMP Fri Nov 5 16:30:45 UTC 2021 aarch64 aarch64 aarch64 GNU/Linux
 ```
 
