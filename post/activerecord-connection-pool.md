@@ -69,9 +69,16 @@ end
 Person.find(1)  # primary DB へ SELECT
 Dog.find(1)  # animals DB へ SELECT
 
-ActiveRecord::Base.connected_to(role: :reading) do
+# 抽象クラスで connected_to を使うとモデルごとに接続先 role を切り替えられる。
+ApplicationRecord.connected_to(role: :reading) do
   Person.find(1)  # primary DB の reading role を指定して SELECT
   Dog.find(1)  # こちらは animals DB の writing のまま
+end
+
+# Base.connected_to はすべての role を一括で切り替える
+ActiveRecord::Base.connected_to(role: :reading) do
+  Person.find(1)  # primary DB の reading role を指定して SELECT
+  Dog.find(1)  # こちらも animals DB の reading role を指定子て SELECT
 end
 ```
 
@@ -138,6 +145,8 @@ Rails アプリを [テンプレート](https://github.com/rails/rails/blob/f95c
 ここまで見てきた `ConnectionHandler` のツリー構造を見るとわかるように、どのデータベースにクエリを発行するかは、その処理を度のクラス (モデル) から行うかに依存する。例えば今回の例だと `AnimalsRecord` を継承した `Dog` クラスは `AnimalsRecord` で指定された `animals` DB へクエリを発行するし、`ActiveRecord::Base.connection` は `ApplicationRecord` で指定された `primary` DB へクエリを発行する。仮に `ActiveRecord::Base.establish_connection( animals DB への接続情報 )` などとすると `@owner_to_pool_manager` の `ActiveRecord::Base` のエントリが `animals` DB のものに置き換えられ、`animals` にクエリが飛ぶことになるので、通常はこのような使い方はしないはず。あくまでどの DB にクエリを飛ばすかはモデルで区別する設計になっている。
 
 その中でどの `role` (と `shard`) にクエリを発行するかは [database_selector](https://railsguides.jp/active_record_multiple_databases.html#%E3%83%AD%E3%83%BC%E3%83%AB%E3%81%AE%E8%87%AA%E5%8B%95%E5%88%87%E3%82%8A%E6%9B%BF%E3%81%88%E3%82%92%E6%9C%89%E5%8A%B9%E3%81%AB%E3%81%99%E3%82%8B) という仕組みが自動でやってくれたりはするが、[ActiveRecord::Base.connected_to](https://github.com/rails/rails/blob/2b3af27d8232db8def0c6600e89a714287381e18/activerecord/lib/active_record/connection_handling.rb#L137) でユーザーが手動で指定することもできる。これはあくまで `role` を指定するための仕組みで、前述のように構造上データベースを切り替えることはあまり想定されていないと思われる。
+
+`connected_to` は前述の例のように `ActiveRecord::Base.connected_to` と呼び出すか、抽象クラス `ApplicationRecord.connected_to` と呼び出すかで挙動が変わる。複数のデータベースがあった場合、前者はすべての DB に対して role を指定するが、後者はその抽象クラスの子クラスの role だけを切り替える。これは [ActiveRecord::Core の connected_to_stack という配列](https://github.com/rails/rails/blob/bad8e773350f8241caa8b4cb2a23e3869c725ee4/activerecord/lib/active_record/core.rb#L201) で実現されている。`connected_to` を呼び出すと [connected_to_stack に呼び出したクラスと role を記録する](https://github.com/rails/rails/blob/bad8e773350f8241caa8b4cb2a23e3869c725ee4/activerecord/lib/active_record/connection_handling.rb#L373)。その後接続取得時に current_role を参照する際、[connected_to_stack の中身を見て role を判別している](https://github.com/rails/rails/blob/bad8e773350f8241caa8b4cb2a23e3869c725ee4/activerecord/lib/active_record/core.rb#L152-L153)。Base クラスのエントリがあればそのロールを、そうでなく自分の親の抽象クラスのエントリがあればそれを使うといった具合。
 
 ## misc
 
