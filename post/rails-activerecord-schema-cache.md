@@ -44,6 +44,8 @@ ModelSchema が `@columns_hash` を取得する処理は Mutex で保護され�
 - [rails schema:cache:dump](https://github.com/rails/rails/blob/39b7bf7a00fd7abc339573a9f5b62cf0db7a8a9b/activerecord/lib/active_record/railties/databases.rake#L500-L514) コマンドで [スキーマ情報をファイルに保存](https://github.com/rails/rails/blob/39b7bf7a00fd7abc339573a9f5b62cf0db7a8a9b/activerecord/lib/active_record/connection_adapters/schema_cache.rb#L172-L182) する
 - [config.active_record.use_schema_cache_dump](https://edgeguides.rubyonrails.org/configuring.html#config-active-record-use-schema-cache-dump) が true の場合 (デフォルトは true)、Rails 起動時にファイルから読み込んで [connection.schema_cache にそれをセット](https://github.com/rails/rails/blob/39b7bf7a00fd7abc339573a9f5b62cf0db7a8a9b/activerecord/lib/active_record/railtie.rb#L170) している
 
+![](images/schema-cache-class-overview.png)
+
 まとめると、運用上大事になってくるのが以下のポイントだと思う。
 
 - ActiveRecord はモデルの定義をデータベースに問い合わせる設計思想
