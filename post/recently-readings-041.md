@@ -1,0 +1,31 @@
+{"title":"最近読んだもの 41 - Postmotems, Google I/O など","date":"2022-05-15T23:00:00+09:00","tags":["readings"]}
+
+- [Reading postmortems](https://danluu.com/postmortem-lessons/)
+    - 各社のオープンなポストモーテムに共通する傾向
+    - エラーハンドリングのミス
+        - シンプルなテストでも実際の障害の 50 % は防げたという [論文](https://www.usenix.org/conference/osdi14/technical-sessions/presentation/yuan) がある
+    - 設定変更
+        - configuration が原因の障害の割合が多いという研究結果が多数
+        - 設定変更でもコードの変更と同じようにステージングやカナリアリリースといった慎重なリリースプロセスをとったほうがよい
+    - など、リンク先を含めて興味深い記述がたくさん
+- [Partial index \- Wikipedia](https://en.wikipedia.org/wiki/Partial_index)
+    - 条件に一致する行だけでインデックスを作成。インデックスサイズが小さく、検索効率もよくなる
+    - MySQL では ver8 時点では未実装。postgresql や sqlite はサポートしている
+    - RDBMS を体系的にはやっていない（業務に必要だった部分しか学んでない）のと MySQL の運用経験しかないので、自分の知識の偏りを実感した
+- [Google Cloud at I/O news roundup \| Google Cloud Blog](https://cloud.google.com/blog/products/application-modernization/google-cloud-at-io-2022-news-roundup)
+    - Google I/O の Cloud 系トピックまとめ
+    - AlloyDB と Cloud Run Jobs をフォローかな
+- [AlloyDB for PostgreSQL intelligent scalable storage \| Google Cloud Blog](https://cloud.google.com/blog/products/databases/alloydb-for-postgresql-intelligent-scalable-storage)
+    - DB のコンピューティング部分とストレージ部分を分離し、後者を cloud nativeな考え方で設計した形
+    - 細部はわからないが外観では Auroraによく似ている
+    - 例示も多く丁寧な説明で良い記事
+- [Google debuts Cloud Run jobs for containerized, scripted tasks \| TechCrunch](https://techcrunch.com/2022/05/11/google-debuts-cloud-run-jobs-for-containerized-scripted-tasks/)
+    - Cloud run jobs は k8s のわJob resource みたいなもの + 管理 Web コンソールといった感じかな
+- [Cloud SQL launches support for in\-place upgrades \| Google Cloud Blog](https://cloud.google.com/blog/products/databases/cloud-sql-launches-support-for-in-place-upgrades)
+    - バージョンのアップグレードが高速になるらしい
+    - MySQL 対応は comming soon
+- [Tick or Tock? Keeping Time and Order in Distributed Databases \| PingCAP](https://pingcap.com/blog/Time-in-Distributed-Systems)
+    - TiDB は TrueTime などは使わず、timestamp oracle (TSO) を物理的に近いところ（データセンターの同一リージョンなど）に置いて
+- [Amazon Aurora Serverless v2 is Generally Available: Instant Scaling for Demanding Workloads \| AWS News Blog](https://aws.amazon.com/blogs/aws/amazon-aurora-serverless-v2-is-generally-available-instant-scaling-for-demanding-workloads/)
+    - v2 になりスケールアップ・インが高速になって、より費用効率がよくなるらしく、すごい
+
