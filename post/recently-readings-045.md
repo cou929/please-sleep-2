@@ -1,4 +1,4 @@
-{"title":"最近読んだもの 45 - TiDB +Flink、オバマ大統領回顧録など","date":"2022-06-12T23:00:00+09:00","tags":["readings"]}
+{"title":"最近読んだもの 45 - TiDB +Flink、オバマ元大統領回顧録など","date":"2022-06-12T23:00:00+09:00","tags":["readings"]}
 
 - [Apache Flink \+ TiDB: A Scale\-Out Real\-Time Data Warehouse for Analytics Within Seconds \| PingCAP](https://en.pingcap.com/blog/apache-flink-tidb-a-scale-out-real-time-data-warehouse-for-analytics-within-seconds/)
     - TiDB と Flink を組み合わせて real-time data warehouse を実現する
