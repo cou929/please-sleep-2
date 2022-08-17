@@ -1,4 +1,4 @@
-{"title":"Nginx の Rate Limit 設定と Leaky Bucket Algorithm","date":"2022-08-15T23:30:00+09:00","tags":["nginx"]}
+{"title":"Nginx の Rate Limit 設定と Leaky Bucket Algorithm","date":"2022-08-18T23:30:00+09:00","tags":["nginx"]}
 
 nginx の [ngx_http_limit_req_module](http://nginx.org/en/docs/http/ngx_http_limit_req_module.html) で rate limit の設定ができる。がパラメータの理解が難しく、当初は設定値の調整に難儀した。背後にある Leaky Bucket というアルゴリズムとその実装を確認することでパラメータもすんなり理解できた。以下調べたことのログを残しておく。
 
