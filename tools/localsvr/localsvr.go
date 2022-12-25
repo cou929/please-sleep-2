@@ -8,6 +8,6 @@ import (
 )
 
 func main() {
-	fmt.Printf("listening localhost:5000 to serve %s", os.Args[1])
-	log.Fatal(http.ListenAndServe(":5000", http.FileServer(http.Dir(os.Args[1]))))
+	fmt.Printf("listening localhost:5001 to serve %s", os.Args[1])
+	log.Fatal(http.ListenAndServe(":5001", http.FileServer(http.Dir(os.Args[1]))))
 }
