@@ -6,7 +6,7 @@
     - ちなみに今回の HTTP を話す MySQL サーバ側の実装は Planet Scale のプロダクトのため必要で実装されたものらしい
 - [Building a database in the 2020s \- me\.0xffff\.me](https://me.0xffff.me/build-database-in-2020s.html)
     - TiDB 創業者による 2020 の記事で、今データベースシステム (プロダクト) を一から作る場合に求められる要件や考慮点など
-    - 2 年経っているが良い記事で、データベースシステムというだけでなく、開発者向けの XXX aa a Service を開発する際の勘所が包括的に簡潔にまとまっている
+    - 2 年経っているが良い記事で、データベースシステムというだけでなく、開発者向けの XXX as a Service を開発する際の勘所が包括的に簡潔にまとまっている
         - Serverless が実現するであろう開発者体験を最終的なゴールにすべき、とか
     - computing と storage を分離させる設計 (Aurora や Alloy DB のような設計) を更に発展させると、データベース管理システムのいろいろなコンポーネント (例えばスキーマ変更、データ圧縮、ロギング、etc...) も分離できるようになっていくという話が面白かった
 - [The End of Programming \| January 2023 \| Communications of the ACM](https://cacm.acm.org/magazines/2023/1/267976-the-end-of-programming/fulltext)
