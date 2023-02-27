@@ -1,0 +1,33 @@
+{"title":"最近読んだもの 57 - Shopify の負荷テスト事例、DB 業界の年間レビュー など","date":"2023-02-26T23:20:00+09:00","tags":["readings"]}
+
+- [Performance Testing At Scale—for BFCM and Beyond \(2023\)](https://shopify.engineering/scale-performance-testing)
+    - Shopify での BFCM に向けたパフォーマンステストの取り組み
+    - 年に一度の最大イベントということもありよく準備しているが、特に以下は興味深かった
+        - 一度負荷テストをして終わりではなく、テストと改善を継続的なプロセスとして捉え直し、繰り返し実施していること
+        - 部分的なテストではなく、プロダクション環境を BFCM で予想される規模まで実際にスケールアウトさせて負荷テストをしていること
+            - ポイントを絞ったテストよりも費用と調整コストはかかるが、「実際にやってみないとわからない」問題箇所を炙り出せる
+            - 例えば単純なところだと、インスタンス数をただ増やすだけでもネットワーク同時接続数に関するミドルウェア側の問題がわかったりする。こういうのは確かにクラスタ全体をスケールアウトさせたほうが検出しやすそう
+- [Databases in 2022: A Year in Review \- OtterTune](https://ottertune.com/blog/2022-databases-retrospective/)
+    - DB 業界の 2022 まとめ
+    - 不況の影響は例外なく受けている
+    - 最大の新製品リリースは AlloyDB。新規性は少ないかもしれないがよくエンジニアリングされており他の IaaS との差分を埋めに行っている
+    - Velox のような OLAP データストアのフレームワークが増加してきている。この流れが進むと各 DB 製品の差異は UIUX やクエリオプティマイザといった定量化しづらい領域に帰着していく可能性がある
+    - context: Andy Pavlo は OtterTune 創業者。CMU で教鞭もとっており [授業は Youtube で公開されている](https://www.youtube.com/playlist?list=PLSE8ODhjZXjaKScG3l0nuOiDTTqpfnWFf)
+- [Ruby 3\.2’s YJIT is Production\-Ready \(2023\)](https://shopify.engineering/ruby-yjit-is-production-ready)
+    - Ruby3.2 での YJIT の改善や本番環境での改善効果など
+    - Shopify で開発・運用され本流にも還元されていてとてもありがたい
+    - 現職のチームでも検証したいという話はでていて、機運が高まっている
+- [How does the Kubernetes scheduler work?](https://jvns.ca/blog/2017/07/27/how-does-the-kubernetes-scheduler-work/)
+    - k8s の Scheduler の仕組みの解説
+    - この人のまとめは安定してわかりやすくて感心する
+- [A few things I've learned about Kubernetes](https://jvns.ca/blog/2017/06/04/learning-about-kubernetes/)
+    - 同じ Julia Evens さんによる k8s の基本的な概念の整理
+- [A container networking overview](https://jvns.ca/blog/2016/12/22/container-networking/)
+    - 同じ Julia Evens さんによるコンテナネットワーキングの解説
+    - 個人的に苦手意識があり、彼女の記事を持ってもよくわからなかった (手を動かしながらじゃないとわかりづらそう)
+        - `Encapsulation` (`ip-in-ip`, `vxlan`) という技術は全く知らなかった
+        - `ip` コマンドなどネットワーク系のコマンドは例を見てもふーんとは思うが、手を動かさないとちゃんと理解できている気分にならない
+- [Bringing Digital People to life with autonomous animation \| All Things Distributed](https://www.allthingsdistributed.com/2023/02/now-go-build-s03e05-soul-machines.html)
+    - 主に人と機械のインタフェースとしての観点から、人工的な人間のアバターを作成する技術の展望について語っている
+    - タイトルだけではピンとこなかったが、LLM の隆盛も考えると重要な技術なんだなと納得感があった
+    - context: Werner Vogels は CTO & VP of Amazon
