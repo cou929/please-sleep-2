@@ -1,4 +1,4 @@
-{"title":"読書メモ: Philosophy of Software Design","date":"2023-11-16T23:00:00+09:00","tags":["book"]}
+{"title":"読書メモ: A Philosophy of Software Design","date":"2023-11-16T23:00:00+09:00","tags":["book"]}
 
 <div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B09B8LFKQL/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://m.media-amazon.com/images/I/7146AYGD0AL._SY466_.jpg" alt="A Philosophy of Software Design, 2nd Edition (English Edition)" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B09B8LFKQL/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">A Philosophy of Software Design, 2nd Edition (English Edition)</a></div><div class="amazlet-detail">英語版  John K. Ousterhout (著)  形式: Kindle版<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B09B8LFKQL/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
 
@@ -89,7 +89,7 @@
 
 <figure>
 <img src="images/posd-tactical-vs-strategic.png" alt="tactical-vs-strategic" width=300 />
-<figcaption>Philosophy of software design (p. 16) Figure 3.1 より</figcaption>
+<figcaption>A Philosophy of Software Design (p. 16) Figure 3.1 より</figcaption>
 </figure>
 
 - スタートアップなど速度が重視される環境でも例外ではない
@@ -118,7 +118,7 @@
 
 <figure>
 <img src="images/posd-deep-and-shallow-modules.png" alt="deep and shallow modules" width=300 />
-<figcaption>Philosophy of software design (p. 23) Figure 4.1 より</figcaption>
+<figcaption>A Philosophy of Software Design (p. 23) Figure 4.1 より</figcaption>
 </figure>
 
 - 四角形の縦軸がそのメソッドのこなせる仕事の量、上辺の太線がインタフェースで、短いほどシンプル
