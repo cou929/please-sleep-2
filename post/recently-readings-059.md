@@ -1,0 +1,68 @@
+{"title":"最近読んだもの 59 - DB 動向年間レビュー、各社のシャーディング事例など","date":"2024-01-09T20:30:00+09:00","tags":["readings"]}
+
+- [Databases in 2023: A Year in Review \| OtterTune](https://ottertune.com/blog/2023-databases-retrospective)
+    - Andy Pavlo (CMU, OtterTune) による毎年恒例の DB 業界動向年間レビュー
+    - LLMs による Vector Databases の隆盛 (専用の DB ではなく、既存 DBMS の機能としての提供も追いついてきそう)
+    - 新標準 [SQL:2023](https://en.wikipedia.org/wiki/SQL:2023)、目玉はグラフ構造へのクエリと、多次元配列のサポート。いずれも実装はまだほぼ無し
+    - MariaDB (会社側) のごたごた
+    - NOTAM というシステムの障害でアメリカ国内線が不通に。80年代に作られたままの、RDBMS を使っていない、おそらく CSV か何かを編集するような自家製 DBMS らしい
+    - などなど。相変わらず技術面からファイナンス含めた企業の隆盛までカバーしており面白い
+- [Big Data and Beyond: My Predictions for 2024 \- me\.0xffff\.me](https://me.0xffff.me/db-trend-2024.html)
+    - PingCap (TiDB) 共同創業者, CTO の Ed による年頭所感
+    - 大規模データでのパフォーマンスのスケーリング問題はほぼ解かれ、次はコスト最適化に主眼が置かれる
+    - TiDB をはじめ Spanner や Vitess が取り組んできたスケーリングという課題は問いとしては解かれている。大量のデータでのパフォーマンスや可能性の問題が無いとすると、次に目が向くのがコストの最適化になる。通常すべてのデータが等しく使われるわけでは無いので、ホットデータもコールドデータも等しくリソースをかけてサーブするのはナンセンス。前者によりリソースを集中させ、後者は安価に保持する
+    - ベクターサーチをはじめより多様なインタフェースに対応する
+    - データベースのカーネル機能によりクラウドネイティブな作りが求められる
+    - オブザーバビリティ、多様な認証、エッジからの直接アクセスなど
+- [The growing pains of database architecture \| Figma Blog](https://www.figma.com/blog/how-figma-scaled-to-multiple-databases/)
+    - Figma の PostgreSQL シャーディング事例
+    - まずシャーディング開始前時点で接続多重化プロキシ (PgBouncer) の導入までは済んでいた
+    - その上でまずは垂直分割(テーブルを別インスタンスに分ける。一つのデーブルが複数インスタンスにまたがることはない) から実施した
+        - 水平分割よりもアプリケーションの変更量や運用懸念が少なく、また負荷分散への一定の効果が見込め、さらに将来の水平分割を妨げないため
+    - 分割計画
+        - テーブルごとのインパクト（DBにかける負荷）と独立性（他のテーブルとの関連度）を定量化して分割方法と順序を決める
+        - 前者は [pg_stat_activity](https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ACTIVITY-VIEW)というクエリごとの平均セッション数を集計
+        - 後者は ActiveRecord のフックで、発行したクエリとその発行元をデータレイク（SnowFlake）に送り集計
+    - Cut Over は独自ツールで無停止切り替えを達成
+    - まずアプリケーションをテーブルごとに適切な接続先に切り替えられるよう変更
+        - デグレのリスクを下げるため、実際に DB を分ける前に、PgBouncer だけを分割しておき、接続先が間違っているとエラーになるようにした
+    - 分割先 DB にテーブルをコピーしレプリケーションする
+        - テラバイト級のデータコピーには時間がかかるが、一旦インデックスなしでデータを移動させ、後からインデックスを追加する高速化をした
+    - ここまで準備ができるといよいよカットオーバーを行う
+        - 旧テーブルへのクエリを短時間止め、新テーブルがキャッチアップしたことを最終確認し、新 DB を primary にプロモートし、クエリ先を新テーブルに切り替える
+        - キャッチアップの確認は [LSNs](https://www.postgresql.org/docs/current/wal-internals.html)で行う
+        - 新 DB をプロモートする際、逆向きのレプリケーションを設定し、切り戻しができるようにする
+    - 50 回の分割作業を行い、カットオーバー時の停止時間は 30 秒程度、その間のリクエストエラー率は高々 2%、最も大きいシャードの CPU 使用率は 10% 程度になった
+- [You Broke Reddit: The Pi-Day Outage](https://www.reddit.com/r/RedditEng/comments/11xx5o0/you_broke_reddit_the_piday_outage/)
+    - RedditのPi day (3/14) に起こった障害の振り返り
+    - k8s のバージョンで発生。直接の原因は master という語が廃止され control plane に置き換わったこと
+    - 遠因として、独自構築された知識がよく共有できていないクラスタだったということ。より一般化すると、社内で使われる技術、環境がばらばらで標準化されていないこと
+    - 少なくともマネージドでできるだけデフォルトパラメータで運用するように心がけようと個人的には思った
+    - またバックアップからの復旧を試みるなど、障害対応の緊張感が伝わる
+- [A CAP tradeoff in the wild \- decomposition ∘ al](https://decomposition.al/blog/2023/12/31/a-cap-tradeoff-in-the-wild/)
+    - k8s のとある [issue](https://github.com/kubernetes/kubernetes/issues/59848) が典型的な CAP 定理のトレードオフに該当するという話
+    - あるホストA, B の状態が何らかの理由で同期されていない場合、A, B からの応答は「レイテンシを重視して間違っていても即座に返す」か「一貫性を重視して同期が取られるまで待つ（ただし無限に取られない可能性もある）」かのいずれかにしか、本質的にはならないというジレンマ
+    - k8s のケースでは etcd の状態とより手前にあるキャッシュの状態が同期しないケースで、同じジレンマが避けようなく存在する
+- [Debugging network stalls on Kubernetes \- The GitHub Blog](https://github.blog/2019-11-21-debugging-network-stalls-on-kubernetes/)
+    - GitHub の k8s クラスタで起こった定期的なレイテンシの悪化のデバッグ。2019 年の記事
+    - これだけの深さまで掘り進めるのは難しいが、状況（関連するコンポーネント）を図示して原因を切り分けていくステップは参考になった
+    - k8s は特にそうだがコンポーネントの層が厚く複雑なので、図を取り入れて進めるやり方はよさそう
+- [Sharding Pinterest: How we scaled our MySQL fleet \| by Pinterest Engineering \| Pinterest Engineering Blog \| Medium](https://medium.com/pinterest-engineering/sharding-pinterest-how-we-scaled-our-mysql-fleet-3f341e96ca6f)
+    - 2015 年の記事。当時の Pinterest での MySQL シャーディング事例
+    - 今仕事で Vitess を使っておりそれでも複雑さを感じるが、このようにすべて自前で行うのに比べれば、遥かに楽だと改めて認識できた
+- [Sharding & IDs at Instagram\. With more than 25 photos and 90 likes… \| by Instagram Engineering \| Instagram Engineering](https://instagram-engineering.com/sharding-ids-at-instagram-1cf5a71e5a5c)
+    - 2012年の記事。当時の Instagram のシャードを跨いだ ID 生成を、タイムスタンプ・シャード番号をベースに DB の `PL/PGSQL` で行ったという話
+    - UUID に比べて短くソート可能で、専用の採番サービスを用意する方針に比べて単一障害点になりづらいなど運用面で有利
+- [Scaling Kubernetes to 7,500 nodes](https://openai.com/research/scaling-kubernetes-to-7500-nodes)
+    - 2021 年の記事。当時の OpenAI で 7,500 ノードを k8s で管理する話
+    - リサーチャーが学習で利用するクラスタで、GPU を利用するのでワークロードごとに 1 ノードを占有する必要がある、パブリックにサービスを公開しないなど、普通の Web アプリケーションクラスタとは異なるポイントも多い
+- [The USE Method](https://www.brendangregg.com/usemethod.html)
+    - Brendan Gregg による、システム高負荷時に素早く原因を切り分ける USE Method の解説
+    - リソースごとの Utilization, Saturation, Errors を見ること
+    - 具体的なコマンドやチェックリストもあり
+- [Linux Performance Analysis in 60,000 Milliseconds \| by Netflix Technology Blog \| Netflix TechBlog](https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55)
+    - Linuxで問題調査をする際に使う基本的なコマンド集。2015 年の記事
+
+## PR
+
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873119545/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank"><img src="https://m.media-amazon.com/images/I/71By-qn40MS._SY466_.jpg" alt="詳説 データベース ―ストレージエンジンと分散データシステムの仕組み" style="border: none; width: 113px;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873119545/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">詳説 データベース ―ストレージエンジンと分散データシステムの仕組み</a></div><div class="amazlet-detail">Alex Petrov (著), 小林 隆浩 (監修), 成田 昇司 (翻訳)<br/></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873119545/pleasesleep-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
