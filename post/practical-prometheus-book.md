@@ -96,10 +96,8 @@ Prometheus のアーキテクチャや PromQL の基礎が把握できて満足�
                 - 静的・動的に設定できる
             - `alert_relabel_configs` アラートルールのラベルを変更
         - `rule_files` で外部ファイルからアラートルールを読み込む
-- Topics: Prometheus のメトリクスフォーマットは [Exposion Formats
-](https: //prometheus.io/docs/instrumenting/exposition_formats/) としてまとめられている
-    - これも参考にしつつオープンな標準として [OpenMetrics
-](https: //openmetrics.io/) がある
+- Topics: Prometheus のメトリクスフォーマットは [Exposion Formats](https: //prometheus.io/docs/instrumenting/exposition_formats/) としてまとめられている
+    - これも参考にしつつオープンな標準として [OpenMetrics](https: //openmetrics.io/) がある
 
 ### Chapter 3：監視ターゲットの検出とラベル操作
 
@@ -125,7 +123,7 @@ Prometheus のアーキテクチャや PromQL の基礎が把握できて満足�
     - メトリクスデータはメトリクスの key と value
     - コメントには人間向けの純粋なコメントの他に、計算機向きのメトリクスの型情報も含まれている
 
-```
+```sh
 # HELP go_goroutine Number of goroutines that currently exist.
 # TYPE go_goroutine gauge
 go_goroutine 38
@@ -139,28 +137,20 @@ go_goroutine 38
     - histogram: 分布。各バケットの区切りが絶対値
         - `le` (less or equal) でバケットの区切りが表現される
 
-        ```
-        prometheus_http_request_duration_seconds_bucket{handler="/",le="0.1"
-} 2
-        prometheus_http_request_duration_seconds_bucket{handler="/",le="0.2"
-} 3
-        prometheus_http_request_duration_seconds_bucket{handler="/",le="0.4"
-} 4
-        prometheus_http_request_duration_seconds_bucket{handler="/",le="1.0"
-} 5
-        prometheus_http_request_duration_seconds_bucket{handler="/",le="+Inf"
-} 5
-        ```
+            ```sh
+            prometheus_http_request_duration_seconds_bucket{handler="/",le="0.1"} 2
+            prometheus_http_request_duration_seconds_bucket{handler="/",le="0.2"} 3
+            prometheus_http_request_duration_seconds_bucket{handler="/",le="0.4"} 4
+            prometheus_http_request_duration_seconds_bucket{handler="/",le="1.0"} 5
+            prometheus_http_request_duration_seconds_bucket{handler="/",le="+Inf"} 5
+            ```
 
     - summary: 分布。各バケットの区切りがパーセンタイル
 
-        ```
-        prometheus_engine_query_duration_seconds{slice="inner_eval",quantile="0.5"
-} 0.001530686
-        prometheus_engine_query_duration_seconds{slice="inner_eval",quantile="0.9"
-} 0.001536674
-        prometheus_engine_query_duration_seconds{slice="inner_eval",quantile="0.99"
-} 0.001536674
+        ```sh
+        prometheus_engine_query_duration_seconds{slice="inner_eval",quantile="0.5"} 0.001530686
+        prometheus_engine_query_duration_seconds{slice="inner_eval",quantile="0.9"} 0.001536674
+        prometheus_engine_query_duration_seconds{slice="inner_eval",quantile="0.99"} 0.001536674
         ```
 
 - 被演算子のデータ型
@@ -174,12 +164,8 @@ go_goroutine 38
     - Range vector: ある期間のすべてのデータ
         - データに加えてタイムスタンプを持つ
 
-        ```
-        node_memory_MemFree_bytes{instance="localhost:9100",job="node_exporter"
-    }[
-        5m
-    ]
-
+        ```sh
+        node_memory_MemFree_bytes{instance="localhost:9100",job="node_exporter"}[5m]
         28323840 @1596386196.235
         28323848 @1596386201.235
         28323932 @1596386206.235
@@ -190,11 +176,10 @@ go_goroutine 38
     - Scala
         - 単純な数値
 - セレクタ
-    - `{job="prometheus"
-    }` といった、メトリクスから条件に一致するものをフィルタするための指定
+    - `{job="prometheus"}` といった、メトリクスから条件に一致するものをフィルタするための指定
         - セレクタがない場合は全件取得になる
 
-        ```
+        ```sh
         # 全サーバのリクエスト数が返される
         prometheus_http_requests_total
         ```
@@ -204,9 +189,7 @@ go_goroutine 38
     - offset
         - `offset 5m` といった指定で、過去の時点データを取得する。範囲ではなく Instant vector を返す
     - range vector selector
-        - `[
-        5m
-    ]` といった指定で、過去の範囲データ Range vencor を取得する
+        - `[5m]` といった指定で、過去の範囲データ Range vencor を取得する
 - 演算子
     - 算術演算子、比較二項演算子、論理演算子
     - 集計演算
@@ -215,10 +198,10 @@ go_goroutine 38
             - by: 指定したラベルでグルーピングして集計する
             - without: 除外するラベルを指定し、残りのラベルすべてでグルーピングして集計する
 
-        ```
-        # job ラベルごとの合計リクエスト数の集計例
-        sum(prometheus_http_requests_total) by (job)
-        ```
+            ```sh
+            # job ラベルごとの合計リクエスト数の集計例
+            sum(prometheus_http_requests_total) by (job)
+            ```
 
 - 関数
     - rate, delta, sort など多くの種類がある
@@ -237,8 +220,7 @@ go_goroutine 38
     - アラートに対応する alert_rule
         - promql と条件式、インターバル、付与するラベルなどを定義する
 
-```
-
+```yaml
 groups:
   - name: example-alerts
     rules:
@@ -252,13 +234,7 @@ groups:
         description: "Memory usage is above 80% for more than 5 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: HighCPUUsage
-      expr: sum(rate(node_cpu_seconds_total{mode="system"
-    }[
-        1m
-    ])) by (instance) / count(node_cpu_seconds_total{mode="system"
-    }[
-        1m
-    ]) by (instance) * 100 > 90
+      expr: sum(rate(node_cpu_seconds_total{mode="system"}[1m])) by (instance) / count(node_cpu_seconds_total{mode="system"}[1m]) by (instance) * 100 > 90
       for: 10m
       labels:
         severity: warning
@@ -309,9 +285,9 @@ Kubernetes クラスタの監視や Prometheus operator について。必要な
             - ヘッドブロックのデータはメモリ上に保持しているので、障害時は WAL から復旧する
         - 一定以上古い期間のファイルはひとまとめにしていく
 
-        ```
+        ```sh
         ./data
-            /01F01F5A3…. # 2時間分ごとのブロック
+            /01F01F5A3…  # 2時間分ごとのブロック
                 /chunk
                     00001
                     …
@@ -320,7 +296,7 @@ Kubernetes クラスタの監視や Prometheus operator について。必要な
                 tombstones
             /01F5AAB8V…
             /01F5AAB8X…
-            /chunks_head. # 現在書き込み中のブロック（ヘッドブロック）
+            /chunks_head  # 現在書き込み中のブロック（ヘッドブロック）
             /lock
             /queries.active
             /wal
