@@ -17,7 +17,7 @@
     <meta property="og:type" content="{{.OgType}}" />
     <meta property="og:url" content="{{.URL.String}}" />
     <meta property="og:site_name" content="{{.SiteTitle}}" />
-    <meta property="og:image" content="{{.URL.Scheme}}://{{.URL.Host}}/images/kosei-pic.png" />
+    <meta property="og:image" content="{{.URL.Scheme}}://{{.URL.Host}}/images/{{.OgImage}}" />
 
     {{$ogDesc := .SiteShortDesc}}
     {{if ge .ArticleIndex 0}}

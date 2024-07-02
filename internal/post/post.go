@@ -57,6 +57,7 @@ func (s *parseState) transit(next parseStatus) error {
 type Post struct {
 	Title    string
 	Issued   time.Time
+	OgImage  string
 	Filename string
 	Raw      []byte
 	Content  string
@@ -64,13 +65,15 @@ type Post struct {
 }
 
 type postHeader struct {
-	Title  string    `json:"title"`
-	Issued time.Time `json:"date"`
+	Title   string    `json:"title"`
+	Issued  time.Time `json:"date"`
+	OgImage string    `json:"og_image"`
 }
 
 type postContent struct {
 	Title   string
 	Issued  time.Time
+	OgImage string
 	Content string
 }
 
@@ -93,6 +96,7 @@ func NewPost(
 
 	p.Title = content.Title
 	p.Issued = content.Issued
+	p.OgImage = content.OgImage
 	p.Content = content.Content
 
 	return p, err
@@ -140,6 +144,7 @@ func (p *Post) parseRaw(raw []byte) (*postContent, error) {
 	return &postContent{
 		Title:   header.Title,
 		Issued:  header.Issued,
+		OgImage: header.OgImage,
 		Content: strings.Join(content, "\n") + "\n",
 	}, nil
 }

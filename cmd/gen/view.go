@@ -84,6 +84,9 @@ func (v View) Build(posts post.Posts) error {
 				return fmt.Errorf("failed to parse url %s. err=%w", urlStr, err)
 			}
 			tv.URL = pageURL
+			if p.OgImage != "" {
+				tv.OgImage = p.OgImage
+			}
 			if err := root.ExecuteTemplate(f, t.Name(), tv); err != nil {
 				return fmt.Errorf("failed to execute template %s. err=%w", t.Name(), err)
 			}
@@ -153,6 +156,7 @@ type templateVariable struct {
 	OgType         string
 	URL            *url.URL
 	TwitterAccount string
+	OgImage        string
 }
 
 func (v View) templateVariable(posts post.Posts) *templateVariable {
@@ -163,6 +167,7 @@ func (v View) templateVariable(posts post.Posts) *templateVariable {
 		ArticleIndex:   -1,
 		SiteShortDesc:  v.c.SiteShortDesc,
 		TwitterAccount: v.c.TwitterAccount,
+		OgImage:        v.c.DefaultOgImage,
 	}
 }
 

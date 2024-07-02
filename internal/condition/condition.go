@@ -17,6 +17,7 @@ type Condition struct {
 	RSSFileName     string
 	TwitterAccount  string
 	SitemapFileName string
+	DefaultOgImage  string
 }
 
 // NewCondition initializes Condition
@@ -35,5 +36,6 @@ func NewCondition() *Condition {
 		RSSFileName:     "rss.xml",
 		TwitterAccount:  "@cou929",
 		SitemapFileName: "sitemap.xml",
+		DefaultOgImage:  "kosei-pic.png",
 	}
 }
